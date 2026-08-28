@@ -1,0 +1,25 @@
+participant_id,scenario_id,condition,time_cap_min,decision,time_s,tlx_mental,tlx_physical,tlx_temporal,tlx_performance,tlx_effort,tlx_frustration,trust,notes,proba
+vesta_raw_pilot,S01,raw,3,up,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.0606
+vesta_text_pilot,S01,unimodal,3,down,0.00,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.3620
+vesta_gated_pilot,S01,vesta,3,up,0.00,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.6338
+vesta_raw_pilot,S02,raw,3,down,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.0605
+vesta_text_pilot,S02,unimodal,3,down,0.00,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.4827
+vesta_gated_pilot,S02,vesta,3,down,0.00,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.4503
+vesta_raw_pilot,S03,raw,3,up,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.1000
+vesta_text_pilot,S03,unimodal,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_gated_pilot,S03,vesta,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_raw_pilot,S04,raw,3,up,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.1000
+vesta_text_pilot,S04,unimodal,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_gated_pilot,S04,vesta,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_raw_pilot,S05,raw,3,up,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.0999
+vesta_text_pilot,S05,unimodal,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_gated_pilot,S05,vesta,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_raw_pilot,S06,raw,3,up,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.0999
+vesta_text_pilot,S06,unimodal,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_gated_pilot,S06,vesta,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_raw_pilot,S07,raw,3,down,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.0999
+vesta_text_pilot,S07,unimodal,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_gated_pilot,S07,vesta,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_raw_pilot,S08,raw,3,down,0.01,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.0996
+vesta_text_pilot,S08,unimodal,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000
+vesta_gated_pilot,S08,vesta,3,abstain,0.20,,,,,,,,MODEL PILOT not a human. NASA-TLX left blank on purpose.,0.5000

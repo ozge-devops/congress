@@ -1,0 +1,42 @@
+{
+  "model": "nlptown/bert-base-multilingual-uncased-sentiment",
+  "not_a_human": true,
+  "n_sample": 250,
+  "sample": {
+    "d_vs_a": {
+      "kappa": -0.01985441344336532,
+      "po": 0.128,
+      "pe": 0.144976,
+      "n": 250
+    },
+    "d_vs_b": {
+      "kappa": -0.0031503896534571317,
+      "po": 0.032,
+      "pe": 0.035039999999999995,
+      "n": 250
+    },
+    "d_vs_c": {
+      "kappa": -0.006711409395973149,
+      "po": 0.064,
+      "pe": 0.07024,
+      "n": 250
+    },
+    "counts_d": {
+      "bearish": 238,
+      "neutral": 9,
+      "bullish": 3
+    }
+  },
+  "n_10k": 10000,
+  "kap_10k_d_vs_a": {
+    "kappa": -0.009975713210453133,
+    "po": 0.1003,
+    "pe": 0.10918649999999999,
+    "n": 10000
+  },
+  "counts_d_10k": {
+    "bearish": 9545,
+    "neutral": 279,
+    "bullish": 176
+  }
+}

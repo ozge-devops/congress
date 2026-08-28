@@ -1,0 +1,103 @@
+{
+  "n": 250,
+  "source": "independent silver codebooks, not three human annotators",
+  "kap": {
+    "a_vs_b": {
+      "kappa": 0.1539561487130599,
+      "po": 0.716,
+      "pe": 0.66432,
+      "n": 250
+    },
+    "a_vs_c": {
+      "kappa": 0.545923632610939,
+      "po": 0.824,
+      "pe": 0.6123999999999999,
+      "n": 250
+    },
+    "b_vs_c": {
+      "kappa": 0.2253521126760563,
+      "po": 0.868,
+      "pe": 0.8296,
+      "n": 250
+    },
+    "fleiss_abc": {
+      "kappa": 0.3150431337702251,
+      "po": 0.8026666666666668,
+      "pe": 0.711904,
+      "n": 250,
+      "raters": 3
+    }
+  },
+  "chart": {
+    "a_vs_b": {
+      "kappa": 0.65657866494956,
+      "po": 0.744,
+      "pe": 0.25456,
+      "n": 250
+    }
+  },
+  "counts": {
+    "rater_a_kap": {
+      "neutral": 171,
+      "bullish": 48,
+      "bearish": 31
+    },
+    "rater_b_kap": {
+      "neutral": 240,
+      "bullish": 10
+    },
+    "rater_c_kap": {
+      "neutral": 215,
+      "bullish": 25,
+      "bearish": 10
+    },
+    "rater_a_chart": {
+      "none": 67,
+      "support_hold": 61,
+      "breakout": 61,
+      "divergence": 61
+    },
+    "rater_b_chart": {
+      "none": 110,
+      "breakout": 62,
+      "support_hold": 61,
+      "divergence": 17
+    }
+  },
+  "n_10k": 10000,
+  "kap_10k": {
+    "a_vs_b": {
+      "kappa": 0.4184614396024547,
+      "po": 0.7828,
+      "pe": 0.6265080000000001,
+      "n": 10000
+    },
+    "a_vs_c": {
+      "kappa": 0.6347139152742085,
+      "po": 0.8541,
+      "pe": 0.60058703,
+      "n": 10000
+    },
+    "b_vs_c": {
+      "kappa": 0.4373562486420882,
+      "po": 0.8498,
+      "pe": 0.733046,
+      "n": 10000
+    },
+    "fleiss_abc": {
+      "kappa": 0.4997995397688016,
+      "po": 0.8289,
+      "pe": 0.6579371399999999,
+      "n": 10000,
+      "raters": 3
+    }
+  },
+  "chart_10k": {
+    "a_vs_b": {
+      "kappa": 0.5159458726672693,
+      "po": 0.8089,
+      "pe": 0.60520944,
+      "n": 10000
+    }
+  }
+}

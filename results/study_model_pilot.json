@@ -1,0 +1,23 @@
+{
+  "wrote": "/workspace/study/pilot_model_responses.csv",
+  "conditions": {
+    "raw": {
+      "n": 8,
+      "week_hit_rate": 0.5,
+      "hits": 4
+    },
+    "unimodal": {
+      "n": 2,
+      "week_hit_rate": 0.0,
+      "hits": 0
+    },
+    "vesta": {
+      "n": 2,
+      "week_hit_rate": 0.5,
+      "hits": 1
+    }
+  },
+  "human_responses_empty": true,
+  "index_mixer_only_on_xu100": true,
+  "note": "raw is scored on all 8 names vs that name's 5-day gold. unimodal/vesta use the public XU100 mixer and only the XU100 scenarios."
+}

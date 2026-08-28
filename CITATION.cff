@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: "VESTA: Time-Budgeted Multimodal Agents for Retail Financial Decision Support"
+message: "Please cite the manuscript in paper/ until a venue version exists."
+type: software
+authors:
+  - family-names: Gunes
+    given-names: Peri
+    email: pgunes@infina.com.tr
+    affiliation: "Infina Software Development Inc."
+  - family-names: Kucuk
+    given-names: Ozge Zelal
+    email: ozelalkucuk@stu.aydin.edu.tr
+    affiliation: "İstanbul Aydın University"
+  - family-names: Benli
+    given-names: Harun
+    email: hbenli@infina.com.tr
+    affiliation: "Infina Software Development Inc."
+url: "https://github.com/ozge-devops/congress"
+repository-code: "https://github.com/ozge-devops/congress"
+date-released: "2026-08-28"

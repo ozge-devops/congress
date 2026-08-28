@@ -1,0 +1,10 @@
+item_id,construct,scale,prompt_en,prompt_tr
+tlx_mental,nasa_tlx,0-20,Mental demand of the briefing,Zihinsel talep
+tlx_physical,nasa_tlx,0-20,Physical demand,Fiziksel talep
+tlx_temporal,nasa_tlx,0-20,Time pressure,Zaman baskısı
+tlx_performance,nasa_tlx,0-20,Perceived success (reverse scored),Algılanan başarı
+tlx_effort,nasa_tlx,0-20,Effort required,Harcanan efor
+tlx_frustration,nasa_tlx,0-20,Frustration,Hayal kırıklığı / sıkıntı
+trust,trust,1-7,I would act on this briefing with real money,Bu brifinge gerçek parayla güvenirim
+decision,choice,up|down|abstain,What happens to this name over the next week?,Önümüzdeki hafta bu enstrüman ne yapar?
+time_s,process,seconds,Seconds until the decision is locked,Karara kadar geçen saniye

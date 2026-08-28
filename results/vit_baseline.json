@@ -1,0 +1,23 @@
+{
+  "model": "google/vit-base-patch16-224",
+  "frozen_backbone": true,
+  "n_test": 308,
+  "dim": 768,
+  "acc": {
+    "mean": 0.509090909090909,
+    "std": 0.015638434517912074,
+    "ci95": 0.013707692236342373
+  },
+  "f1": {
+    "mean": 0.502534726340156,
+    "std": 0.018343509583071974,
+    "ci95": 0.01607879507447776
+  },
+  "seed0": {
+    "accuracy": 0.5292207792207793,
+    "f1": 0.5274224098705861,
+    "precision": 0.527617512302732,
+    "recall": 0.5275066548358474
+  },
+  "note": "ImageNet ViT-B/16 CLS + sklearn MLP. Not a 70B teacher, not fine-tuned ViT."
+}

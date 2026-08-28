@@ -1,0 +1,38 @@
+{
+  "n_events": 10000,
+  "n_tickers": 28,
+  "date_start": "2018-05-24",
+  "date_end": "2026-08-19",
+  "split": {
+    "test": 1310,
+    "train": 7396,
+    "val": 1294
+  },
+  "text_polarity": {
+    "bearish": 3060,
+    "bullish": 4709,
+    "neutral": 2231
+  },
+  "chart_signal": {
+    "breakout": 802,
+    "divergence": 1189,
+    "none": 7739,
+    "support_hold": 270
+  },
+  "y_direction_1d": {
+    "0": 4724,
+    "1": 5276
+  },
+  "y_leak_vol_rate": 0.1949,
+  "with_headlines": 8,
+  "with_kap": 5511,
+  "n_kap_filings_linked": 44284,
+  "kap_polarity": {
+    "bearish": 903,
+    "bullish": 2316,
+    "neutral": 6781
+  },
+  "index_events": 2052,
+  "constituent_events": 7948,
+  "with_kap_body": 4100
+}
