@@ -11,7 +11,7 @@ enrich:
 
 experiment:
 	PYTHONPATH=src python3 experiments/run_public_benchmark.py
-
+ 
 figures: experiment
 	PYTHONPATH=src python3 experiments/make_figures.py
 
