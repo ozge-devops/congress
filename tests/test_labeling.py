@@ -1,6 +1,6 @@
 """Sanity checks for the silver-label codebook (no future peeking on perception axes)."""
 
-from __future__ import annotations
+from __future__ import annotations nj
 
 import numpy as np
 
