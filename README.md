@@ -1,6 +1,6 @@
 # VESTA
 
-Peri Gunes (Infina Software),Harun Benli (Infina Software),Ozge Zelal Kucuk (Istanbul Aydin University),
+Peri Gunes (Infina),Harun Benli (Infina),Ozge Zelal Kucuk (Istanbul Aydin University),
 
 Camera-ready PDF:[paper/vesta.pdf](paper/vesta.pdf)  
 LaTeX:[paper/vesta.tex](paper/vesta.tex)  
