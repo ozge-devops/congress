@@ -1,5 +1,5 @@
 from vesta.vlm_parse import parse_deplot, parse_matcha_pair, parse_number
-mn
+
 
 def test_deplot_bar_price_down():
     cap = "TITLE |\n bar | price \n 0 | 9768 \n 5 | 9656 \n 35 | 9325"
