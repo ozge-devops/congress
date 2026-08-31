@@ -4,7 +4,7 @@ Fails if a rounded table figure in the manuscript drifts from the JSON that
 produced it. Does not invent human-study scores.
 """
 
-from __future__ import annotations m
+from __future__ import annotations 
 
 import json
 import re
