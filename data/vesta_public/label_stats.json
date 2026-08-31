@@ -1,7 +1,7 @@
 {
   "n_events": 37046,
   "n_tickers": 28,
-  "date_start": "2018-05-24",
+  "date_start": "2018-05-24", 
   "date_end": "2026-08-19",
   "split": {
     "test": 5303,
