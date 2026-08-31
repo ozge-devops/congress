@@ -1,6 +1,6 @@
 {
   "source": "https://www.kap.org.tr/tr/api/disclosure/members/byCriteria",
-  "fields": "subject + summary teaser (list API, not paid disclosureDetail HTML)",
+  "fields": "subject + summary teaser (list API, not paid disclosureDetail HTML)", 
   "n_filings": 39890,
   "n_unique_disclosure_index": 37820,
   "n_tickers": 27,
