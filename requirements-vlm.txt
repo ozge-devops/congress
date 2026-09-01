@@ -1,7 +1,4 @@
-# Optional CPU stack for Pix2Struct / MatCha / MiniLM KAP embeddings.
-# Install torch from the CPU wheel index first:
-#   pip install torch --index-url https://download.pytorch.org/whl/cpu 
-#   pip install -r requirements-vlm.txt
+
 transformers>=4.44.0
 sentencepiece>=0.2.0
 accelerate>=0.33.0
