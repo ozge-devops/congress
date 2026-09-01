@@ -2,7 +2,7 @@
 
 This is not a three-human gold set. Rater A is the production silver rule,
 B is a subject-taxonomy codebook, C is a body-token codebook. Chart B uses
-10-bar levels instead of 20-bar. Annotator columns are filled by codebook B
+10-bar levels instead of 20-bar. Annotator columns are filled by codebook B                           
 and flagged as such.
 """
 
