@@ -18,7 +18,7 @@ def main() -> None:
     test["abs_ret"] = test["session_ret"].abs()
     picks = []
     used = set()
-    # Diverse: index + 7 names, mixed polarity/chart, larger moves first.
+    
     index = test[test["ticker"] == "XU100.IS"].nlargest(3, "abs_ret")
     rest = test[test["ticker"] != "XU100.IS"].sort_values("abs_ret", ascending=False)
     for _, row in pd.concat([index, rest]).iterrows():
