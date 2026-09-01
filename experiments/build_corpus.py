@@ -1,4 +1,4 @@
-"""Build the silver-labeled public VESTA corpus on disk."""
+"""Build the silver-labeled public VESTA corpus on disk."""           
 
 from __future__ import annotations
 
