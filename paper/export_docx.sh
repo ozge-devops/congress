@@ -1,7 +1,3 @@
-#!/usr/bin/env bash
-# Export vesta.tex to Word. LNCS PDF remains the camera-ready artifact;
-# this .docx is for coauthors who cannot open LaTeX. Figures must be PNG
-# because pandoc's docx writer does not embed PDF images.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 TMP="$(mktemp -d)"
