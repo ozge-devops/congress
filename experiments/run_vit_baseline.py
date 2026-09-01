@@ -3,7 +3,7 @@
 Not a 70B teacher. Pretrained ImageNet ViT, linear/MLP head on next-day
 direction. Embeddings are cached by date so the run resumes.
 """
-
+                                      
 from __future__ import annotations
 
 import json
