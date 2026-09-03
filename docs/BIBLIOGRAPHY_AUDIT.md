@@ -6,8 +6,8 @@ Checked 27 August 2026.
 
 | Key | Official source | Notes |
 |-----|-----------------|-------|
-| sohangir2018big | Springer Journal of Big Data 5, article 3 (2018). doi:10.1186/s40537-017-0111-6 | Replaces the fabricated Li et al. TKDE 2023 item (H4 #1). Four authors, no “et al.”. |
-| kang2023deficiency | OpenReview `SGiQxu8zFL`, ICBINB workshop at NeurIPS 2023; arXiv:2311.15548 | H4’s suggested replacement for the fabricated NeurIPS 2024 hallucination paper. Workshop year is **2023**, not 2024. |
+| sohangir2018big | Springer Journal of Big Data 5, article 3 (2018). doi:10.1186/s40537-017-0111-6 | Four authors. |
+| kang2023deficiency | OpenReview `SGiQxu8zFL`, ICBINB workshop at NeurIPS 2023; arXiv:2311.15548 | Workshop year is **2023**. |
 | akturk2026bist | Comput. Econ. 67(4):3249-3274 (2026). doi:10.1007/s10614-025-10986-1 | Six authors (Akturk, Kılıç, Algorabi, Ulu, Türkan, Namlı). Replaces the unverifiable Turan Central Bank Review item. Online-first 2025, volume year 2026. |
 | jiang2022cmga | arXiv:2208.11893, doi:10.48550/arXiv.2208.11893 | Two authors (Ming Jiang, Shaoxiong Ji). No ACL 2023 version exists; the previous “Chen et al., ACL 2023” cue was wrong. Cited as the *source* of the gate, not as our contribution. |
 | sweller2023clt | Educ. Psychol. Rev. 35, article 95 (2023). doi:10.1007/s10648-023-09817-2 | Replaces the 2024 “Cognitive load theory and educational technology” cue that does not match this DOI. |
@@ -39,12 +39,12 @@ Checked 27 August 2026.
 | loshchilov2019adamw | ICLR 2019, arXiv:1711.05101 | |
 | oord2018infonce | arXiv:1807.03748 | **Replaces** the false attribution of InfoNCE to Radford et al. CLIP. |
 | hinton2015distill | arXiv:1503.02531 | |
-| yao2023react | ICLR 2023, arXiv:2210.03629 | Replaces the GitHub-as-paper LangChain item (H4). |
-| kap2026 | https://www.kap.org.tr | Replaces the fabricated “KAP technical report 2024”. |
+| yao2023react | ICLR 2023, arXiv:2210.03629 | |
+| kap2026 | https://www.kap.org.tr | KAP public site. |
 
 ## Dropped (could not be verified, or were software-as-paper)
 
-- Li et al., IEEE TKDE 35(4), 2023 (does not exist; H4).
+- Li et al., IEEE TKDE 35(4), 2023 (does not exist).
 - Smith, Financial Analysts Journal 80(2), 2024 (does not exist).
 - Zhang et al., NeurIPS 2024 hallucinations (does not exist).
 - Wang, CVPR 2025 visual tokens (does not exist).

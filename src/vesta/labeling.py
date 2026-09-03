@@ -205,7 +205,7 @@ NEWS_LEXICON = {
     ),
 }
 
-# Subject-type priors used for the original KAP sentiment axis (not FX).
+# Subject-type priors for KAP polarity.
 KAP_SUBJECT_PRIOR = {
     "kar payı": 1.5,
     "kâr payı": 1.5,

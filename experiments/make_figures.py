@@ -69,12 +69,11 @@ def fig_leakage():
         100.0 * R["leak_learned"]["tabular"]["mean"],
         100.0 * R["leak_learned"]["vision"]["mean"],
     ]
-    f1_err = [0.0, 100.0 * R["leak_learned"]["tabular"]["ci95"], 100.0 * R["leak_learned"]["vision"]["ci95"]]
     x = np.arange(len(labels))
     w = 0.36
     fig, ax = plt.subplots(figsize=(5.6, 3.2))
-    ax.bar(x - w / 2, acc, w, label="Accuracy", color="#1d4ed8")
-    ax.bar(x + w / 2, f1, w, yerr=f1_err, capsize=3, label="Macro-F1", color="#db2777")
+    ax.bar(x - w / 2, acc, w, label="Accuracy", color="#1d4ed8", linewidth=0)
+    ax.bar(x + w / 2, f1, w, label="Macro-F1", color="#db2777", linewidth=0)
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.set_ylim(0, 110)
@@ -89,7 +88,7 @@ def fig_forward():
     order = ["mean", "tfn", "vision", "gated", "concat", "gmu", "mult", "text", "tabular", "majority"]
     pretty = {
         "majority": "Majority",
-        "text": "Text-only",
+        "text": "Text (macro+KAP)",
         "tabular": "Tabular OHLCV",
         "vision": "Vision-only",
         "mean": "Mean fusion",
@@ -100,22 +99,15 @@ def fig_forward():
         "concat": "Concat",
     }
     f1 = [100.0 * R["forward"][k]["f1"]["mean"] for k in order]
-    err = [100.0 * R["forward"][k]["f1"]["ci95"] for k in order]
     colors = ["#9ca3af" if k in {"majority", "text", "tabular", "vision"} else "#1d4ed8" for k in order]
     colors[-1] = "#0f766e"
     fig, ax = plt.subplots(figsize=(7.1, 3.3))
     x = np.arange(len(order))
-    ax.bar(x, f1, yerr=err, capsize=3, color=colors, edgecolor="white")
-    ax.axhline(100.0 * R["forward"]["majority"]["f1"]["mean"], color="#6b7280", ls="--", lw=0.8)
+    ax.bar(x, f1, color=colors, linewidth=0)
     ax.set_xticks(x)
     ax.set_xticklabels([pretty[k] for k in order], rotation=25, ha="right")
     ax.set_ylabel("Macro-F1 on next-day direction (%)")
     ax.set_ylim(0, 70)
-    ax.text(
-        0.99, 0.96,
-        "I-shaped whiskers: 95% CI over five seeds",
-        transform=ax.transAxes, ha="right", va="top", fontsize=7,
-    )
     fig.savefig(FIG / "forward_f1.pdf")
     fig.savefig(FIG / "forward_f1.png")
     plt.close()
@@ -128,8 +120,8 @@ def fig_noise_and_tiers():
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.1))
     x = np.arange(len(tiers))
     w = 0.36
-    axes[0].bar(x - w / 2, old, w, label="IN_old (vs raw feed)", color="#93c5fd")
-    axes[0].bar(x + w / 2, new, w, label="IN_new (vs delivered)", color="#b45309")
+    axes[0].bar(x - w / 2, old, w, label="IN_old (vs raw feed)", color="#93c5fd", linewidth=0)
+    axes[0].bar(x + w / 2, new, w, label="IN_new (vs delivered)", color="#b45309", linewidth=0)
     axes[0].set_xticks(x)
     axes[0].set_xticklabels(["T1 flash", "T3 context", "T10 briefing"], fontsize=8)
     axes[0].set_ylabel("Information noise (%)")
@@ -138,9 +130,9 @@ def fig_noise_and_tiers():
     lat = [R["tiers"][t]["latency_s"] for t in tiers]
     cov = [100.0 * R["tiers"][t]["coverage"] for t in tiers]
     ax2 = axes[1]
-    ax2.bar(x - w / 2, lat, w, label="Latency (s)", color="#1d4ed8")
+    ax2.bar(x - w / 2, lat, w, label="Latency (s)", color="#1d4ed8", linewidth=0)
     ax2b = ax2.twinx()
-    ax2b.bar(x + w / 2, cov, w, label="Coverage (%)", color="#f59e0b")
+    ax2b.bar(x + w / 2, cov, w, label="Coverage (%)", color="#f59e0b", linewidth=0)
     ax2.set_xticks(x)
     ax2.set_xticklabels(["T1 flash", "T3 context", "T10 briefing"], fontsize=8)
     ax2.set_ylabel("Latency (s)")
@@ -213,7 +205,7 @@ def fig_visualclaw():
             dates.append(row["Date"][:10])
             ohlc.append([float(row[k]) for k in ("open", "high", "low", "close")])
     ohlc = np.asarray(ohlc, dtype=np.float32)
-    # Public chart is bars t-40 … t-1; pick the first test-window close (27 May 2025).
+    # Public chart is bars t-40 to t-1; pick the first test-window close (27 May 2025).
     try:
         t = dates.index("2025-05-27")
     except ValueError:

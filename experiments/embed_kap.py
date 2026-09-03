@@ -78,7 +78,7 @@ def main() -> None:
         accs.append(sc["accuracy"])
     report = {
         "model": MODEL_ID,
-        "not_production_m3": True,
+        "kap_list_teasers": True,
         "n_test": int(len(test)),
         "acc": mean_ci(accs),
         "f1": mean_ci(f1s),

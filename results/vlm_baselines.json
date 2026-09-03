@@ -315,7 +315,7 @@
   "majority": 1,
   "fine_tuned": false,
   "device": "cpu",
-  "note": "Zero-shot CPU. DePlot = Pix2Struct chart-to-table. MatCha-ChartQA is asked for first and last y-values. Not a fine-tune. Window-trend is sign(last close \u2212 first close) of the same OHLC.",
+  "note": "Zero-shot CPU. DePlot = Pix2Struct chart-to-table. MatCha-ChartQA is asked for first and last y-values. Window-trend is sign(last close - first close) of the same OHLC.",
   "window_trend": {
     "accuracy": 0.5162337662337663,
     "f1": 0.49510974201001157,

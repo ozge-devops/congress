@@ -27,12 +27,12 @@ def main() -> None:
     out = ROOT / "data" / "vesta_public"
     out.mkdir(parents=True, exist_ok=True)
 
-    print("Downloading index + FX + gold …")
+    print("Downloading index + FX + gold ...")
     index_frames = download_public_market(cache)
-    print("Downloading constituents …")
+    print("Downloading constituents ...")
     stocks = download_constituents(cache)
     print(f"  got {len(stocks)} equity series")
-    print("Fetching recent Yahoo headlines …")
+    print("Fetching recent Yahoo headlines ...")
     news_bag = fetch_recent_news(
         ["XU100.IS", *CONSTITUENTS.keys()],
         cache / "yahoo_news.json",
@@ -40,13 +40,13 @@ def main() -> None:
     n_news = sum(len(v) for v in news_bag.values())
     print(f"  cached {n_news} recent items")
 
-    print("Downloading KAP disclosure lists (public byCriteria API) …")
+    print("Downloading KAP disclosure lists (public byCriteria API) ...")
     kap_rows = download_kap(cache)
     kap_inv = inventory(kap_rows)
     (out / "kap_inventory.json").write_text(json.dumps(kap_inv, indent=2, ensure_ascii=False))
     print(f"  {len(kap_rows)} KAP filings ({kap_inv['n_unique_disclosure_index']} unique indices)")
 
-    print("Labeling events …")
+    print("Labeling events ...")
     events = build_events(index_frames, stocks, news_bag, kap_rows)
     stats = summarize(events)
     print(json.dumps(stats, indent=2))

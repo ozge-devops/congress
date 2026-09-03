@@ -1,1 +1,1 @@
-{"model": "BAAI/bge-m3", "dim": 1024, "n": 2276, "public_m3_not_infina": true}
+{"model": "BAAI/bge-m3", "dim": 1024, "n": 2276, "kap_list_teasers": true}

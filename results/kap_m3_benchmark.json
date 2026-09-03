@@ -1,6 +1,6 @@
 {
   "model": "BAAI/bge-m3",
-  "public_m3_not_infina": true,
+  "kap_list_teasers": true,
   "n_test": 308,
   "acc": {
     "mean": 0.5110389610389611,

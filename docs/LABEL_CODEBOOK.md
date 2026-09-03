@@ -47,7 +47,7 @@ These are list teasers from kap.org.tr. Lexicon hits on `kap_text` / `kap_body` 
 
 Score KAP subjects + teasers (+ HTML body when cached). No USD/TRY, gold, RSI,
 or future return. Subject priors: dividend / buyback / bonus issue tilt bullish;
-probe / fine / lawsuit tilt bearish. Thresholds: `≥ 1` bullish, `≤ −1` bearish.
+probe / fine / lawsuit tilt bearish. Thresholds: `≥ 1` bullish, `≤ -1` bearish.
 
 Full-panel counts: bullish 7,172; bearish 3,742; neutral 26,132. Most KAP days
 are routine filings, so neutral is the honest majority. HTML bodies are cached
@@ -85,7 +85,7 @@ Score the *brief*, not the future return:
 - Yahoo headline lexicon if a same-calendar-day title exists
 - KAP list subject/teaser lexicon (Turkish + English) if a filing published that day
 
-Thresholds: `≥ 1` bullish, `≤ −1` bearish, else neutral.
+Thresholds: `≥ 1` bullish, `≤ -1` bearish, else neutral.
 
 **`chart_signal`** ∈ `{breakout, support_hold, divergence, none}`
 

@@ -80,9 +80,16 @@ def test_leak_and_vol_window_wording():
     assert round(100.0 * r["leak_closed_form"]["f1"], 1) == 100.0
     assert round(100.0 * r["leak_learned"]["tabular_acc"]["mean"], 1) == 96.8
     assert round(100.0 * r["leak_learned"]["vision"]["mean"], 1) == 58.2
+    test_pos = 100.0 * r["leak_closed_form"]["pos"] / r["leak_closed_form"]["n"]
+    all_pos = 100.0 * r["leak_rate_all"]
+    assert abs(test_pos - 8.1) < 0.05
+    assert abs(all_pos - 9.4) < 0.05
+    assert "8.1" in paper
     assert "trailing 30-day" not in paper
     assert "20-day" in paper and "60" in paper
     assert "loshchilov2019adamw" not in paper
+    assert "always fire at 49.7" not in paper
+    assert "Same macro-F1 values as Table" not in paper
 
 
 def test_technical_proxy_is_mean_vision_not_last_seed():
@@ -102,6 +109,18 @@ def test_technical_proxy_is_mean_vision_not_last_seed():
     assert "H2/H4" not in figsrc
     assert 'set_title("Denominator change (H2)")' not in figsrc
     assert "visual input's OHLCV" not in paper
+    assert "I-shaped whiskers" not in figsrc
+    assert "yerr" not in figsrc
+    assert "I-shaped whiskers" not in paper
+    assert "Text (macro+KAP)" in figsrc
+    assert "70B" not in paper
+    assert "occupies that gap" not in paper
+    assert "first-class" not in paper
+    assert "\u2014" not in paper
+    assert "\u2013" not in paper
+    assert "70B" not in (ROOT / "results" / "vit_baseline.json").read_text()
+    assert "public_m3_not_infina" not in paper
+    assert "H4" not in (ROOT / "docs" / "REVIEWER_MAP.md").read_text()
 
 
 def test_tiers_disclose_declared_latency_and_covered_acc():

@@ -14,7 +14,7 @@ text. VisualClaw reads a 40-bar candlestick (bars \(t-40,\ldots,t-1\)) as a
 \(24\times24\) image. A standard sigmoid mixer combines the two streams and is
 compared with GMU, tensor fusion, a MulT-style block, mean, and concat. The
 Temporal Orchestration Layer spends a 1-, 3-, or 10-minute budget (T1 / T3 /
-T10) by changing chain depth, not the mixer.
+T10) by changing chain depth; the mixer stays fixed.
 
 The headline task is next-day BIST100 direction. A \(2\sigma\) realized-volatility
 flag on the tabular vector at day \(t\) is a diagnostic: a closed-form rule
@@ -32,7 +32,7 @@ Bibliography check: [docs/BIBLIOGRAPHY_AUDIT.md](docs/BIBLIOGRAPHY_AUDIT.md).
 plus XU100, 24 May 2018 to 19 August 2026. Splits are chronological by calendar
 date (70/15/15). 19,645 rows have a same-day KAP list teaser; 15,212 have a
 cached HTML body from kap.org.tr. Public BGE-M3 in Table 2 uses the same list
-text (`public_m3_not_infina`).
+text.
 
 Rebuild from Yahoo + KAP if you need to:
 
@@ -88,9 +88,9 @@ pdflatex vesta.tex && bibtex vesta && pdflatex vesta.tex && pdflatex vesta.tex
 ## What is still missing
 
 A three-annotator gold set, a 12-investor NASA-TLX study (`study/` has the
-protocol; `responses.csv` is a header only), Infina KAP bodies, and a GPU
-Pix2Struct/MatCha fine-tune. Table 2 mixers fuse unimodal scores rather than
-a learned \(W_g\). The public chart window is bars \(t-40,\ldots,t-1\); the
+protocol; `responses.csv` is a header only), full KAP disclosure-detail pages,
+and a GPU Pix2Struct/MatCha fine-tune. Table 2 mixers fuse unimodal scores;
+$W_g$ is unused. The public chart window is bars \(t-40,\ldots,t-1\); the
 tabular features and the vol diagnostic are at day \(t\).
 
 Questions: ozelalkucuk@stu.aydin.edu.tr, pgunes@infina.com.tr, hbenli@infina.com.tr.

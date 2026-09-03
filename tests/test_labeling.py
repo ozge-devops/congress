@@ -105,7 +105,7 @@ def test_chart_b_not_identical_to_a_on_10bar_breakout():
 
 
 def test_ohlc_window_excludes_day_t():
-    """Public chart is t-LOOKBACK … t-1; leak flag uses day-t statistics."""
+    """Public chart is t-LOOKBACK to t-1; leak flag uses day-t statistics."""
     from vesta.data import LOOKBACK
 
     n = LOOKBACK + 5

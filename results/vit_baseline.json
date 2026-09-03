@@ -19,5 +19,5 @@
     "precision": 0.527617512302732,
     "recall": 0.5275066548358474
   },
-  "note": "ImageNet ViT-B/16 CLS + sklearn MLP. Not a 70B teacher, not fine-tuned ViT."
+  "note": "Frozen ImageNet ViT-B/16 CLS plus a sklearn MLP head."
 }

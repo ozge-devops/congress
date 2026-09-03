@@ -185,7 +185,7 @@ def build_events(
         if t not in bist.index:
             return
         close = df["close"]
-        # Same convention as vesta.data.build_samples: bars t-LOOKBACK … t-1, features at t.
+        # Same convention as vesta.data.build_samples: bars t-LOOKBACK to t-1, features at t.
         ohlc = df.iloc[i - LOOKBACK : i][["open", "high", "low", "close"]].to_numpy(dtype=np.float32)
         r1 = float(df["ret1"].iloc[i]) if pd.notna(df["ret1"].iloc[i]) else 0.0
         v20 = float(df["vol20"].iloc[i]) if pd.notna(df["vol20"].iloc[i]) else float("nan")

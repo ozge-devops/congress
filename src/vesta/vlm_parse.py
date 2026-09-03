@@ -9,8 +9,8 @@ def parse_deplot(text: str) -> int | None:
     """Return 1 if the extracted series ends above its start, else 0.
 
     DePlot sometimes swaps the header to ``price | bar`` while still emitting
-    ``bar_index | price`` rows. We therefore take the column whose values look
-    like BIST index levels (typically thousands), not the 0, 5, 10, … bar axis.
+    ``bar_index | price`` rows. Use the column whose values look like BIST
+    index levels (thousands), and skip the bar-index column.
     """
     if not text:
         return None

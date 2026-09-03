@@ -192,7 +192,7 @@ def download_kap(
         if not oid:
             print(f"  skip {t}: no KAP oid")
             continue
-        print(f"  KAP {t} …", flush=True)
+        print(f"  KAP {t} ...", flush=True)
         try:
             rows = fetch_ticker_range(t, oid, start, end)
         except Exception as exc:

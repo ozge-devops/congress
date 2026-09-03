@@ -51,11 +51,7 @@ def _logreg(seed: int) -> Pipeline:
 
 
 def gmu_features(h_t: np.ndarray, h_v: np.ndarray) -> np.ndarray:
-    """Bimodal GMU-style features (Arevalo et al.): z * h_v + (1-z) * h_t.
-
-    The gate is driven by the difference of unimodal scores so that it
-    varies across samples (a mean of [p, 1-p] pairs is constant).
-    """
+    """Bimodal GMU-style features (Arevalo et al.). Gate from the unimodal score gap."""
     logit = 4.0 * (h_v[:, 1:2] - h_t[:, 1:2]) + 0.5 * (h_v[:, 1:2] + h_t[:, 1:2] - 1.0)
     z = 1.0 / (1.0 + np.exp(-logit))
     return z * h_v + (1.0 - z) * h_t
@@ -71,10 +67,7 @@ def tfn_features(h_t: np.ndarray, h_v: np.ndarray) -> np.ndarray:
 
 
 def gated_features(h_t: np.ndarray, h_v: np.ndarray) -> np.ndarray:
-    """Scalar sigmoid gate on the unimodal score gap (Arevalo / Jiang style).
-
-    g > 0.5 privileges text; g < 0.5 privileges vision.
-    """
+    """Scalar sigmoid gate on the unimodal score gap (Arevalo / Jiang)."""
     logit = 4.0 * (h_t[:, 1:2] - h_v[:, 1:2])
     g = 1.0 / (1.0 + np.exp(-logit))
     fused = g * np.tanh(h_t) + (1.0 - g) * np.tanh(h_v)

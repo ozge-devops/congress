@@ -62,7 +62,7 @@ def main() -> None:
         print(f"Embedding {len(docs)} KAP days with {MODEL_ID}", flush=True)
         vecs = _embed_texts(docs)
         np.savez_compressed(npz_path, dates=np.array(dates), vectors=vecs)
-        meta_path.write_text(json.dumps({"model": MODEL_ID, "dim": int(vecs.shape[1]), "n": len(dates), "public_m3_not_infina": True}))
+        meta_path.write_text(json.dumps({"model": MODEL_ID, "dim": int(vecs.shape[1]), "n": len(dates), "kap_list_teasers": True}))
 
     frames = download_public_market(cache)
     samples = build_samples(frames)
@@ -86,7 +86,7 @@ def main() -> None:
         accs.append(sc["accuracy"])
     report = {
         "model": MODEL_ID,
-        "public_m3_not_infina": True,
+        "kap_list_teasers": True,
         "n_test": int(len(test)),
         "acc": mean_ci(accs),
         "f1": mean_ci(f1s),
