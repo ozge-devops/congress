@@ -90,7 +90,7 @@ pdflatex vesta.tex && bibtex vesta && pdflatex vesta.tex && pdflatex vesta.tex
 A three-annotator gold set, a 12-investor NASA-TLX study (`study/` has the
 protocol; `responses.csv` is a header only), full KAP disclosure-detail pages,
 and a GPU Pix2Struct/MatCha fine-tune. Table 2 mixers fuse unimodal scores;
-$W_g$ is unused. The public chart window is bars \(t-40,\ldots,t-1\); the
+learned GMU weights $W_v,W_t,W_z$ are unused. The public chart window is bars \(t-40,\ldots,t-1\); the
 tabular features and the vol diagnostic are at day \(t\).
 
 Questions: ozelalkucuk@stu.aydin.edu.tr, pgunes@infina.com.tr, hbenli@infina.com.tr.

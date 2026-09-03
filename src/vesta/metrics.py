@@ -32,7 +32,7 @@ def mcnemar(y_true: np.ndarray, pred_a: np.ndarray, pred_b: np.ndarray) -> dict[
     return {"n01": n01, "n10": n10, "chi2": float(chi2), "p": float(p)}
 
 
-def mean_ci(values: list[float], z: float = 1.96) -> dict[str, float]:
+    """Wald mean and 1.96 standard error (ddof=1)."""
     arr = np.asarray(values, dtype=float)
     mu = float(arr.mean())
     if len(arr) < 2:

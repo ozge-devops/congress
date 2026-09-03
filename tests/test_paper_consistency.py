@@ -113,7 +113,11 @@ def test_technical_proxy_is_mean_vision_not_last_seed():
     assert "yerr" not in figsrc
     assert "I-shaped whiskers" not in paper
     assert "Text (macro+KAP)" in figsrc
-    assert "70B" not in paper
+    assert "t-interval" not in paper.lower().replace(" ", "")
+    assert "1.96" in paper
+    assert "eq:pos" not in paper
+    assert "0.18" in paper
+    assert "W_z" in paper
     assert "occupies that gap" not in paper
     assert "first-class" not in paper
     assert "\u2014" not in paper
