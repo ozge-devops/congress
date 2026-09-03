@@ -53,8 +53,8 @@ def _logreg(seed: int) -> Pipeline:
 def gmu_features(h_t: np.ndarray, h_v: np.ndarray) -> np.ndarray:
     """Bimodal GMU-style features (Arevalo et al.): z * h_v + (1-z) * h_t.
 
-    The gate is driven by the *difference* of unimodal scores so that it
-    actually varies across samples (a mean of [p, 1-p] pairs is constant).
+    The gate is driven by the difference of unimodal scores so that it
+    varies across samples (a mean of [p, 1-p] pairs is constant).
     """
     logit = 4.0 * (h_v[:, 1:2] - h_t[:, 1:2]) + 0.5 * (h_v[:, 1:2] + h_t[:, 1:2] - 1.0)
     z = 1.0 / (1.0 + np.exp(-logit))
@@ -65,16 +65,15 @@ def tfn_features(h_t: np.ndarray, h_v: np.ndarray) -> np.ndarray:
     """Compact tensor-fusion features (Zadeh et al.): outer product of [h; 1] then flatten."""
     t = np.concatenate([h_t, np.ones((h_t.shape[0], 1))], axis=1)
     v = np.concatenate([h_v, np.ones((h_v.shape[0], 1))], axis=1)
-    # (B, Dt+1, Dv+1) — keep small dims
+    # (B, Dt+1, Dv+1); keep small dims
     out = np.einsum("bi,bj->bij", t, v)
     return out.reshape(h_t.shape[0], -1)
 
 
 def gated_features(h_t: np.ndarray, h_v: np.ndarray) -> np.ndarray:
-    """Standard scalar sigmoid gate (Arevalo/Jiang-style; not a contribution).
+    """Scalar sigmoid gate on the unimodal score gap (Arevalo / Jiang style).
 
-    g > 0.5 privileges text; g < 0.5 privileges vision. The logit uses the
-    unimodal score gap so the gate is sample-dependent.
+    g > 0.5 privileges text; g < 0.5 privileges vision.
     """
     logit = 4.0 * (h_t[:, 1:2] - h_v[:, 1:2])
     g = 1.0 / (1.0 + np.exp(-logit))
@@ -89,12 +88,10 @@ def _softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
 
 
 def mult_features(text: np.ndarray, vision: np.ndarray) -> np.ndarray:
-    """CPU MulT-style directional cross-attention (Tsai et al. 2019), one layer.
+    """One-layer directional cross-attention (Tsai et al. 2019 style) on CPU.
 
-    Not the pretrained CMU-MOSI transformer. Text is two tokens of 8 from the
-    16-d brief; vision is nine 8×8 patches of the 24×24 candle. Random
-    projections are frozen (seed 0) so the MLP on top is the only learner,
-    matching how GMU/TFN features are consumed.
+    Text is two tokens from the 16-d brief; vision is nine 8×8 patches of the
+    24×24 candle. Random projections are frozen (seed 0); the MLP on top trains.
     """
     text = np.asarray(text, dtype=np.float32)
     vision = np.asarray(vision, dtype=np.float32)

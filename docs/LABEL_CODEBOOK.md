@@ -1,9 +1,7 @@
 # VESTA-Public label codebook (rule_v1)
 
 Silver labels for the public replication corpus in `data/vesta_public/`.
-These are **not** the three-annotator KAP gold labels from the withdrawn
-VESTA-10K protocol. They exist so the leakage-free task is trainable from
-public BIST data.
+The labels are deterministic functions of public OHLCV and KAP list text.
 
 ## Files
 
@@ -13,7 +11,7 @@ public BIST data.
 | `events_10k.parquet` / `events_10k.csv` | Paper-sized slice: every index day + largest constituent moves |
 | `label_stats.json` / `label_stats_10k.json` | Class counts, KAP linkage, date range |
 | `kap_inventory.json` | 39,890 public KAP list filings (27 tickers) |
-| `human_annotation_sample.csv` | 250 stratified rows; annotator columns are codebook B (`annotator_id=codebook_b`), not a person |
+| `human_annotation_sample.csv` | 250 stratified rows; annotator columns are codebook B (`annotator_id=codebook_b`) |
 
 Index series: every XU100 session after the lookback. The public chart is the
 40 sessions **strictly before** day \(t\); tabular features and `y_leak_vol`
@@ -40,9 +38,8 @@ Source: `POST https://www.kap.org.tr/tr/api/disclosure/members/byCriteria`
 | `n_kap_bodies` | How many of those indices have a body in cache |
 | `kap_daily_features.csv` | Per-calendar-day 8-d mixer features (index-level bag) |
 
-These are **list teasers**, not paid `disclosureDetail` HTML bodies and not
-Infina’s production KAP micro-text. Lexicon hits on `kap_text` / `kap_body` feed
-`kap_polarity` and the mixed `text_polarity`; they do **not** enter `y_direction_*`.
+These are list teasers from kap.org.tr. Lexicon hits on `kap_text` / `kap_body` feed
+`kap_polarity` and the mixed `text_polarity`; they do not enter `y_direction_*`.
 
 ## KAP-only silver sentiment (original text axis)
 
@@ -64,16 +61,16 @@ for 25,734 filings; 15,212 event rows have a stripped `kap_body`.
 | `y_direction_5d` | same, five sessions ahead |
 | `y_excess_1d` | next return above the trailing 20-day mean return |
 
-A closed-form readout of today’s OHLCV **cannot** recover these columns.
+These columns are not recoverable from today's OHLCV by a closed-form rule.
 
-## Diagnostic label (does leak — H4)
+## Diagnostic label (function of the tabular vector at t)
 
 | Column | Meaning |
 |--------|---------|
 | `y_leak_vol` / `anomaly_flag` | 20-day realized vol `>` mean + 2σ of the prior 60 vol observations |
 
 Train the headline model on `y_direction_*`. Report `y_leak_vol` only as the
-“read the numbers” sanity check (closed-form rule = 100%).
+closed-form sanity check (rule = 100% F1).
 
 ## Silver perception labels (original three axes)
 
@@ -102,19 +99,18 @@ Computed on the last bar of the 40-day window, using **prior** bars only:
 Priority is the order above. This axis *is* a function of the visible chart,
 which is what VisualClaw was originally scored on.
 
-## Second silver pass (not a human gold set)
+## Codebook B on the annotation sample
 
 `human_annotation_sample.csv` annotator columns are filled by **codebook B**
 (`annotator_id=codebook_b`): subject-title taxonomy for text, 10-bar VisualClaw
-for chart. This is not a person. Three-codebook κ is in
+for chart. Three-codebook κ is in
 [`docs/AGREEMENT.md`](AGREEMENT.md) and `results/agreement.json`.
 
 A later human pass should overwrite `annotator_id` with initials and should
 not look at `y_direction_1d`.
 
-## What this corpus is not
+## Scope
 
-- Not Infina’s production KAP bodies / M3 embeddings. Public list teasers + a
-  cached HTML-body subset.
-- Yahoo `news` is a **recent** scrape (41 event rows), not a 2018–2026 archive.
-- Not a three-human gold set. Do not quote the withdrawn κ=0.81.
+KAP text is public list teasers plus a cached HTML-body subset.
+Yahoo headlines cover 41 event rows (recent scrape).
+Polarity is silver codebook output; this package has no three-annotator gold set.

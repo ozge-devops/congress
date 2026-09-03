@@ -100,6 +100,8 @@ def build_samples(frames: dict[str, pd.DataFrame], kap_features: dict[str, np.nd
     samples: list[Sample] = []
     idx = bist.index
     for i in range(LOOKBACK + VOL_DIST_WIN, len(idx) - 5):
+        # Chart: LOOKBACK sessions strictly before day t. Tabular features,
+        # the 2σ vol flag, and y_{t+1} are computed at day t.
         window = bist.iloc[i - LOOKBACK : i]
         if window[["open", "high", "low", "close"]].isna().any().any():
             continue

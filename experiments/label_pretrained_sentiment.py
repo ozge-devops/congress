@@ -1,8 +1,7 @@
-"""Pretrained multilingual sentiment on real KAP text (rater D).
+"""Rater D: pretrained multilingual sentiment on KAP teasers and bodies.
 
-Not a human annotator. `nlptown/bert-base-multilingual-uncased-sentiment`
-is run on the same public teasers+bodies as codebooks A/B/C. NASA-TLX is
-not involved. Does not overwrite annotator_id=codebook_b.
+Model: nlptown/bert-base-multilingual-uncased-sentiment.
+Does not overwrite annotator_id=codebook_b.
 """
 
 from __future__ import annotations

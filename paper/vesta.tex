@@ -1,7 +1,6 @@
-% VESTA revision after AIxIA 2026 reviews
-% LNCS camera-ready skeleton for a subsequent AI / FinTech venue.
+% VESTA manuscript (LNCS).
 \PassOptionsToPackage{expansion=false}{microtype}
-\documentclass[runningheads]{llncs}
+\documentclass{llncs}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -13,12 +12,10 @@
 \urlstyle{same}
 
 \begin{document}
-\pagestyle{headings}
+\pagestyle{plain}
 \mainmatter
 \title{VESTA: Time-Budgeted Multimodal Agents for Retail Financial Decision Support}
-\titlerunning{VESTA: Time-Budgeted Multimodal Agents}
 \author{Peri Gunes\inst{1} \and Ozge Zelal Kucuk\inst{2} \and Harun Benli\inst{1}}
-\authorrunning{P. Gunes et al.}
 \institute{R\&D Center, Infina Software Development Inc., Istanbul, T\"urkiye\\
 \email{pgunes@infina.com.tr}, \email{hbenli@infina.com.tr}
 \and
@@ -27,38 +24,29 @@ Software Development Faculty, \.{I}stanbul Ayd{\i}n University, Istanbul, T\"urk
 \maketitle
 
 \begin{abstract}
-In high-volatility emerging markets such as Borsa Istanbul (BIST), retail investors face a low signal-to-noise ratio created by the divergence between unstructured disclosures and rapidly changing charts. Existing decision-support systems process news and technical pictures independently, and they ignore the investor's \emph{temporal bandwidth}: the same briefing is delivered whether the user has one minute or ten. This paper presents VESTA, a three-layer agentic system that (i)~retrieves portfolio-conditioned textual evidence, (ii)~reads candlestick images and the underlying OHLCV numbers, and (iii)~spends a declared 1-, 3-, or 10-minute budget by changing the depth of the agentic chain. We do \emph{not} treat the scalar cross-modal gate as a methodological contribution; it is a standard sigmoid mixer, compared against GMU and tensor fusion. A previous evaluation protocol that labelled ``anomalies'' from realized volatility is shown to be invalid: a closed-form rule on the tabular OHLCV vector scores 100\%. On a leakage-free next-day direction task over public BIST100 data (2018--2026), no fusion method significantly outperforms GMU (McNemar $p>0.46$ on seed 0). What \emph{does} vary across tiers is coverage, declared latency, and length-normalized information noise. A paper-trading overlay on seed-0 calls does not beat buy-and-hold in the 2025--2026 test window. Source: \url{https://github.com/ozge-devops/congress}.
+In high-volatility emerging markets such as Borsa Istanbul (BIST), retail investors face a low signal-to-noise ratio created by the divergence between unstructured disclosures and rapidly changing charts. Existing decision-support systems process news and technical pictures independently, and they ignore the investor's temporal bandwidth: the same briefing is delivered whether the user has one minute or ten. This paper presents VESTA, a three-layer agentic system that (i)~retrieves portfolio-conditioned textual evidence, (ii)~reads candlestick images and the underlying OHLCV numbers, and (iii)~spends a declared 1-, 3-, or 10-minute budget by changing the depth of the agentic chain. The contribution is that briefing stack plus an evaluation that treats the user's minutes as a compute budget and measures leakage, per-tier delivery, and action against buy-and-hold. Text and vision are combined with a standard sigmoid mixer and compared with GMU and tensor fusion. A realized-volatility flag on the same day's OHLCV is recovered at 100\% F1 by a closed-form rule, so the headline task is next-day BIST100 direction. On public BIST100 data (2018-2026), no fusion method significantly outperforms GMU (McNemar $p>0.46$ on seed 0). Coverage, declared latency, and length-normalized information noise vary across the three time tiers. A paper-trading overlay on seed-0 calls does not beat buy-and-hold in the 2025-2026 test window. Source: \url{https://github.com/ozge-devops/congress}.
 
 \keywords{Multimodal AI \and Agentic RAG \and Financial decision support \and Borsa Istanbul \and Temporal bandwidth \and Evaluation protocol}
 \end{abstract}
 
 \section{Introduction}
-The financial information landscape is high-entropy. Retail investors sit between the textual density of the Public Disclosure Platform (KAP)~\cite{kap2026} and the visual flux of technical charts. The difficulty is not only volume but \emph{modality mismatch}: a constructive disclosure can coincide with a failed breakout, and the two streams must be reconciled before a decision. Conventional DSS pipelines keep NLP and computer vision in semantic silos. A second, less discussed failure mode is temporal: systems emit the same information density whether the user has sixty seconds or ten minutes~\cite{eppler2004overload,miller1956magical,sweller1988cognitive}. On a mobile-first retail platform this mismatch is not cosmetic; it is extra intrinsic load~\cite{sweller2023clt}.
+Retail investors sit between the textual density of the Public Disclosure Platform (KAP)~\cite{kap2026} and the visual flux of technical charts. The difficulty is not only volume but modality mismatch: a constructive disclosure can coincide with a failed breakout, and the two streams must be reconciled before a decision. Conventional DSS pipelines keep NLP and computer vision in separate pipelines. A second failure mode is temporal: systems emit the same information density whether the user has sixty seconds or ten minutes~\cite{eppler2004overload,miller1956magical,sweller1988cognitive}. On a mobile-first retail platform that mismatch adds intrinsic load~\cite{sweller2023clt}.
 
-Recent LLM trading agents attack related problems from a different angle. FinMem layers memory by information half-life~\cite{yu2024finmem}. Neither that line of work nor typical chart-reading trading bots treat the \emph{user's available time} as a first-class computational budget, and they are evaluated as trading agents rather than as a retail decision-support interface. VESTA occupies that gap.
-
-\paragraph{Contributions.}
-This revision is explicit about what is, and is not, claimed.
-\begin{enumerate}
-\item \textbf{Time-budgeted orchestration.} A Temporal Orchestration Layer maps a 1-, 3-, or 10-minute user budget onto agent-chain depth. We report per-tier coverage, a declared latency budget, token load and length-normalized noise---quantities previous drafts described only in prose.
-\item \textbf{A leakage-aware evaluation protocol} for multimodal BIST decision support. We show that a realized-volatility ``anomaly'' label is a closed-form function of the \emph{tabular} OHLCV vector at day $t$, and we replace it with a forward-looking directional task. The public chart is bars $t-40,\ldots,t-1$ and does not contain today's candle. A tabular OHLCV baseline is reported whenever chart images are used~\cite{jiang2023reimagining}.
-\item \textbf{External fusion baselines and a decision-quality backtest.} Scalar gating is compared with GMU~\cite{arevalo2017gmu} and tensor fusion~\cite{zadeh2017tfn}. Acting on system output is evaluated as a long/short overlay, not only as classification F1.
-\end{enumerate}
-What we withdraw: Cross-Modal Gated Fusion is a standard scalar sigmoid over concatenated features~\cite{arevalo2017gmu,jiang2022cmga}. It is an implementation choice, not a contribution. We also withdraw the previously reported 92.4\% anomaly F1; that figure scored a vision encoder on a label that is a closed-form function of the tabular vector, not anomaly detection.
+Recent LLM trading agents attack related problems from a different angle. FinMem layers memory by information half-life~\cite{yu2024finmem}. Neither that line of work nor typical chart-reading trading bots treat the user's available time as a first-class computational budget, and they are evaluated as trading agents rather than as a retail decision-support interface. VESTA occupies that gap: KAP list text and a 40-bar chart, delivered as a 1-, 3- or 10-minute briefing, with an evaluation that scores leakage, per-tier delivery, and action against buy-and-hold. If the user has about one minute, the system emits a short alert or stays silent. If they have about three minutes, it adds one retrieval step over similar past days. If they have about ten minutes, it expands into a briefing with a macro explanation and a hedge sketch. The fusion rule does not change with the clock; only how many agent steps run and how much text is shown. We measure, for each setting, how often a call is issued, how long the pipeline is allowed to run, how many tokens are delivered, and what fraction of that payload is non-actionable. Decision support is scored on next-day BIST direction, not on a realized-volatility flag that can be read off the same day's OHLCV table. Whenever a chart encoder is used, a numeric OHLCV baseline is reported beside it~\cite{jiang2023reimagining}. The mixer is a standard sigmoid over concatenated features~\cite{arevalo2017gmu,jiang2022cmga}; we compare it with GMU~\cite{arevalo2017gmu} and tensor fusion~\cite{zadeh2017tfn}. Actionability is a long/short overlay against buy-and-hold, not classification F1 alone. The public chart is bars $t-40,\ldots,t-1$ and does not contain today's candle.
 
 \section{Related Work}
 \subsection{LLMs and agentic workflows in finance}
-Financial NLP has moved from sentiment scoring~\cite{sohangir2018big} to domain LLMs such as FinGPT~\cite{yang2023fingpt}. Hallucination on prices and terminology remains a documented failure mode~\cite{kang2023deficiency}, which is why VESTA grounds text in retrieval~\cite{lewis2020rag} rather than in unaugmented generation. Tool-using agents~\cite{yao2023react} and trading-oriented systems with layered memory~\cite{yu2024finmem} are the closest architectural relatives. FinMem allocates memory by the \emph{staleness of facts}; VESTA allocates compute by the \emph{staleness of the user's attention}. FinMem-style agents optimize for the trader; VESTA is scored as a briefing engine for a time-constrained retail user.
+Financial NLP has moved from sentiment scoring~\cite{sohangir2018big} to domain LLMs such as FinGPT~\cite{yang2023fingpt}. Hallucination on prices and terminology remains a documented failure mode~\cite{kang2023deficiency}, which is why VESTA grounds text in retrieval~\cite{lewis2020rag} rather than in unaugmented generation. Tool-using agents~\cite{yao2023react} and trading-oriented systems with layered memory~\cite{yu2024finmem} are the closest architectural relatives. FinMem allocates memory by the staleness of facts; VESTA allocates compute by the staleness of the user's attention. FinMem-style agents optimize for the trader; VESTA is scored as a briefing engine for a time-constrained retail user.
 
 \subsection{Multimodal fusion and chart understanding}
-GMU learns a multiplicative gate between modalities~\cite{arevalo2017gmu}; Tensor Fusion Networks model unimodal and bimodal interactions via an outer product~\cite{zadeh2017tfn}; MulT uses directional pairwise cross-modal attention~\cite{tsai2019mult}. Jiang and Ji add a forget-gate over cross-modal attention maps~\cite{jiang2022cmga}. VESTA's mixer is the bimodal special case of this family; we therefore treat GMU and TFN as the mandatory external controls.
+GMU learns a multiplicative gate between modalities~\cite{arevalo2017gmu}; Tensor Fusion Networks model unimodal and bimodal interactions via an outer product~\cite{zadeh2017tfn}; MulT uses directional pairwise cross-modal attention~\cite{tsai2019mult}. Jiang and Ji add a forget-gate over cross-modal attention maps~\cite{jiang2022cmga}. VESTA's mixer is the bimodal special case of this family; we report GMU and TFN as external controls.
 
-On the vision side, Pix2Struct and MatCha pretrain screenshot-to-text models that read plots~\cite{lee2023pix2struct,liu2023matcha}. In asset pricing, Jiang, Kelly and Xiu show that CNNs on price-trend \emph{images} extract return-predictive patterns~\cite{jiang2023reimagining}. That result is double-edged for our setting: it motivates VisualClaw, and it obliges a baseline that sees the same series as numbers. Without the tabular arm, a vision score on a label computed from OHLCV is uninterpretable.
+On the vision side, Pix2Struct and MatCha pretrain screenshot-to-text models that read plots~\cite{lee2023pix2struct,liu2023matcha}. In asset pricing, Jiang, Kelly and Xiu show that CNNs on price-trend images extract return-predictive patterns~\cite{jiang2023reimagining}. That result motivates VisualClaw and requires a baseline that sees the same series as numbers. Without the tabular arm, a vision score on a label computed from OHLCV is uninterpretable.
 
 BIST100 forecasting from technical indicators is studied by Akturk et al.~\cite{akturk2026bist}; their features are numeric, which is the required control whenever a chart encoder is scored.
 
 \subsection{Cognitive load and adaptive interfaces}
-Cognitive load theory requires that presented density match working-memory capacity~\cite{sweller1988cognitive,sweller2023clt,miller1956magical}. Information overload is a long-standing MIS construct~\cite{eppler2004overload}. Adaptive GUIs have a documented evaluation discipline: measure whether adaptation helps the task, not only whether the widget changed~\cite{gajos2006exploring,findlater2009adaptive}. Summarization evaluation that ignores output length systematically rewards brevity~\cite{sun2019compare}. These four literatures jointly constrain our metrics (Sect.~\ref{sec:metrics}).
+Cognitive load theory requires that presented density match working-memory capacity~\cite{sweller1988cognitive,sweller2023clt,miller1956magical}. Information overload is a long-standing MIS construct~\cite{eppler2004overload}. Adaptive GUIs have a documented evaluation discipline: measure whether adaptation helps the task, not only whether the widget changed~\cite{gajos2006exploring,findlater2009adaptive}. Summarization evaluation that ignores output length systematically rewards brevity~\cite{sun2019compare}. On Borsa Istanbul the load is concrete: a KAP list, a candlestick, and a clock between a filing and a retail order. That is the finance instance of the same four literatures. They jointly constrain our metrics (Sect.~\ref{sec:metrics}) and the 1-/3-/10-minute protocol (Sect.~\ref{sec:user}).
 
 \section{System}
 VESTA has three layers (Fig.~\ref{fig:arch}): perception by two expert agents, an off-the-shelf fusion block, and a temporal synthesis layer that spends the user's time budget.
@@ -66,59 +54,105 @@ VESTA has three layers (Fig.~\ref{fig:arch}): perception by two expert agents, a
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.88\textwidth]{figures/architecture.pdf}
-\caption{VESTA architecture. Fusion is an interchangeable block (GMU, TFN, scalar gate, or mean). The Temporal Orchestration Layer is the only named systems contribution.}
+\caption{KAP list text and a 40-bar chart go through a standard mixer; T1, T3 or T10 spends the 1-/3-/10-minute budget.}
 \label{fig:arch}
 \end{figure}
 
 \subsection{DataClaw0: portfolio-conditioned retrieval}
-DataClaw0 is an agentic RAG loop~\cite{lewis2020rag,yao2023react}, not a summarizer. Documents $N$ and the user portfolio $P$ are embedded with M3-Embedding~\cite{chen2024m3}. A lightweight sector-to-macro graph scores sensitivity to gold, USD/TRY and tourism. Relevance of document $d_i$ is
+DataClaw0 is a retrieve-score loop~\cite{lewis2020rag,yao2023react} (Fig.~\ref{fig:claw}):
+\begin{enumerate}
+\item Embed the day's KAP filings (and any news teasers) together with the user portfolio $P$ using M3-Embedding~\cite{chen2024m3}.
+\item Score each document against the portfolio and the day's gold / USD/TRY moves. A light sector-to-macro graph says which names are sensitive to those macros. Relevance of document $d_i$ is
 \begin{equation}
 R(d_i)=\sigma\!\left(\alpha\cos(v_{d_i},v_P)+\sum_{j\in\{G,X,T\}}\beta_j\Delta_j\right),
 \label{eq:rel}
 \end{equation}
-where $\Delta_j$ is the percentage change of macro-indicator $j$ and $\sigma$ is the logistic function. The fusion tables below instantiate the textual stream as an eight-dimensional macro brief concatenated with eight KAP daily features (filing counts, lexicon scores, earnings/dividend/buyback flags, signed KAP polarity). Production DataClaw0 uses Eq.~\eqref{eq:rel} over live KAP bodies and M3 embeddings. The public stand-in is MiniLM~\cite{reimers2019sentence} and public BGE-M3 over KAP concatenations---not Infina HTML.
+where $\Delta_j$ is the percentage change of macro-indicator $j$ and $\sigma$ is the logistic function.
+\item Keep the top-ranked filings as the text brief that later enters fusion.
+\item Stop after this pass on a one-minute budget (T1). On a three- or ten-minute budget, run one more retrieval hop over historical analogues, then write.
+\end{enumerate}
+The text dataset is VESTA-Public: one row per ticker-day (37{,}046 events; 27 BIST names plus XU100; 24 May 2018 to 19 August 2026). A row is kept if the name moved at least 2\%, the vol flag fired, RSI was extreme, or a KAP list item was published that calendar day. 19{,}645 rows have a same-day KAP teaser; 15{,}212 have a cached public HTML body. Yahoo headlines exist for 41 rows. Table~\ref{tab:text} shows four KAP list strings. We do three things with them: (i)~a Turkish/English lexicon plus subject priors (dividend and buyback tilt bullish; fine and probe tilt bearish) yields $\mathrm{kap\_polarity}$; (ii)~the same strings, plus USD/TRY, gold and the session, become an eight-plus-eight feature vector for the mixers; (iii)~MiniLM~\cite{reimers2019sentence} and BGE-M3 embed the concatenated list text. The templated brief a T10 user would read looks like: ``2018-06-14 BIMAS.IS. Session return +0.12\%. USD/TRY \ldots Brief polarity bullish; chart cue none. Payların Geri Alınmasına İlişkin Bildirim. 13 Haziran 2018 Tarihli Pay Geri Alım İşlemleri.''
 
-\subsection{VisualClaw, and the numbers behind the picture}
-VisualClaw renders an OHLC window as an image. Production uses a compact vision backbone in the spirit of ViT~\cite{dosovitskiy2021vit} with recency-weighted position
+\begin{table}[t]
+\caption{Example KAP list teasers in VESTA-Public (subject plus short summary from kap.org.tr). Polarity is the silver codebook.}
+\label{tab:text}
+\centering
+\footnotesize
+\begin{tabular}{llp{6.4cm}l}
+\toprule
+Date & Ticker & KAP list teaser & Polar.\ \\
+\midrule
+2018-06-14 & BIMAS & Payların Geri Alınmasına İlişkin Bildirim. 13 Haziran 2018 Tarihli Pay Geri Alım İşlemleri & bullish \\
+2018-06-19 & ASELS & BISTECH Pay Piyasası Alım Satım Sistemi Duyurusu. Temettü Ödemesi & bullish \\
+2018-05-25 & YKBNK & Özel Durum Açıklaması (Genel). Bankamıza verilen idari para cezasının iptaline ilişkin açılan dava hk. & bearish \\
+2020-08-11 & FROTO & Özel Durum Açıklaması (Genel). Rekabet Kurulu Soruşturma Kararı Hakkında & bearish \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{figures/dataclw0_loop.pdf}
+\caption{DataClaw0 retrieve-score loop. The blue hop is a second retrieval, used only on a T3 or T10 budget.}
+\label{fig:claw}
+\end{figure}
+
+\subsection{VisualClaw: candles, pixels, tokens}
+\label{sec:vision}
+VisualClaw draws the chart from OHLC bars. Figure~\ref{fig:vision} is one XU100 window from the test split.
+\begin{enumerate}
+\item Take the 40 sessions strictly before day $t$ (open, high, low, close). Today's candle is not in the picture.
+\item Paint a grayscale candlestick: a one-pixel wick and a rectangular body. Close $\ge$ open is dark ($30/255$); close $<$ open is light ($180/255$). Price is min-max scaled to that window.
+\item Resize to $24\times24$. The vision MLP flattens this to a $576$-d vector and classifies with hidden layers $64$-$32$. That is the vision row in Table~\ref{tab:fwd}.
+\item For the MulT-style mixer only, cut the same $24\times24$ image into a $3\times3$ grid of $8\times8$ patches (nine visual tokens). The $16$-d text brief is split into two tokens. Projections are frozen (seed 0); only the MLP on top is trained.
+\end{enumerate}
+Two extra probes, not the mixer inputs: a frozen ImageNet ViT-B/16~\cite{dosovitskiy2021vit} that resizes a colour chart to $224\times224$ and uses that model's own $16\times16$ patches; and zero-shot DePlot / MatCha, which see a matplotlib RGB screenshot of the same 40 bars (Fig.~\ref{fig:vision}a), not the $24\times24$ tensor. Tabular OHLCV at day $t$ is always reported beside the picture~\cite{jiang2023reimagining}. A recency-weighted patch position
 \begin{equation}
-E_{\mathrm{total}}=E_{\mathrm{patch}}+E_{\mathrm{pos}}\cdot\bigl(1+\lambda\, t/T\bigr).
+E_{\mathrm{total}}=E_{\mathrm{patch}}+E_{\mathrm{pos}}\cdot\bigl(1+\lambda\, t/T\bigr)
 \label{eq:pos}
 \end{equation}
-Public tables do not train Eq.~\eqref{eq:pos}: they use a $24\times24$ grayscale MLP and a frozen ImageNet ViT-B/16 CLS probe. The chart is bars $t-40,\ldots,t-1$; tabular features are computed at $t$. The numeric control remains mandatory~\cite{jiang2023reimagining}.
+is unused in the public tables, which train the $24\times24$ MLP instead.
 
-\subsection{Fusion, used not proposed}
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/visualclaw.pdf}
+\caption{VisualClaw on one XU100 test window (40 bars before 27 May 2025). (a)~RGB screenshot for DePlot / MatCha. (b)~$24\times24$ grayscale tensor the MLP flattens. (c)~Nine $8\times8$ tokens for the MulT-style mixer.}
+\label{fig:vision}
+\end{figure}
+
+\subsection{Fusion}
 \label{sec:fusion}
-Let $H_{\mathrm{text}}$ and $H_{\mathrm{vision}}$ be the two streams. The scalar gate used in the production stack is
+The two streams are fused on every run with a standard mixer~\cite{arevalo2017gmu,jiang2022cmga}. Let $H_{\mathrm{text}}$ and $H_{\mathrm{vision}}$ be the text and vision vectors. A scalar gate
 \begin{align}
 g&=\sigma\bigl(W_g[H_{\mathrm{text}};H_{\mathrm{vision}}]+b_g\bigr),\label{eq:gate}\\
 H_{\mathrm{fused}}&=g\cdot\tanh(H_{\mathrm{text}})+(1-g)\cdot\tanh(H_{\mathrm{vision}}).\label{eq:fuse}
 \end{align}
-Equations~\eqref{eq:gate}--\eqref{eq:fuse} are the production form (learned $W_g$). Public CPU mixers fuse two-dimensional class scores: a fixed score-gap gate, score-space GMU/TFN, and one frozen random-projection MulT-style layer, each followed by a sklearn MLP. No mixer is advertised as novel.
+weights the two streams: $g$ close to 1 trusts text, $g$ close to 0 trusts the chart. $W_g$ can be learned. In the public tables we instead mix the two class scores with this gate, with GMU, with tensor fusion, or with a mean, then pass the mix to a small MLP. The same fused score later drives T1 / T3 / T10. All mixers are reported side by side.
 
 \subsection{Temporal Orchestration Layer}
 \label{sec:tol}
 Given fused confidence $|g-0.5|$ and a user budget $B\in\{1,3,10\}$ minutes, the layer selects a chain:
 \begin{itemize}
-\item \textbf{T1 (flash).} Emit a gated alert only if $|g-0.5|>\tau$; otherwise abstain. Target latency $<1$\,s.
-\item \textbf{T3 (context).} Always emit the fused call plus one retrieval hop over historical analogues.
-\item \textbf{T10 (briefing).} Expand into a macro explanation and a hedge sketch (e.g.\ airline exposure versus a gold certificate), at several seconds of wall-clock time.
+\item T1 (flash). Emit a gated alert only if $|g-0.5|>\tau$; otherwise abstain. Target latency $<1$\,s.
+\item T3 (context). Always emit the fused call plus one retrieval hop over historical analogues.
+\item T10 (briefing). Expand into a macro explanation and a hedge sketch (e.g.\ airline exposure versus a gold certificate), at several seconds of wall-clock time.
 \end{itemize}
-Depth, not the mixer, is what changes with $B$. Section~\ref{sec:tiers} reports coverage, latency, tokens and noise per tier.
+Depth, not the mixer, is what changes with $B$. That is the cognitive adaptation: the same fused call is spent as a flash, a short context, or a briefing. Section~\ref{sec:tiers} reports coverage, latency, tokens and noise per tier.
 
 \section{Evaluation Protocol}
 \label{sec:protocol}
-\subsection{Why the previous headline task does not measure anomalies}
+\subsection{Diagnostic: the realized-volatility label}
 \label{sec:leak}
-A previous draft defined a $2\sigma$ realized-vol ``anomaly'' and reported 92.4\% F1. Here the flag is 20-day vol above the mean $+2\sigma$ of the previous 60 vol observations---a closed-form function of the \emph{tabular} vector at $t$ (100\% F1). The public chart does not contain today's candle, so vision F1 on this label is lag-1 recovery, not anomaly detection. We keep the task only as a \emph{diagnostic}.
+The $2\sigma$ realized-vol flag is 20-day vol above the mean $+2\sigma$ of the previous 60 vol observations. It is a closed-form function of the tabular vector at $t$ (100\% F1). The public chart does not contain today's candle, so vision F1 on this label is lag-1 recovery. We report the flag only as a diagnostic.
 
 \subsection{Primary task: forward direction}
-The primary label at close of day $t$ is $y_{t+1}=\mathbb{1}[r_{t+1}>0]$, the sign of the next session's BIST100 simple return. This quantity is not a function of the information set at $t$. We also report a five-session horizon. Splits are chronological (70/15/15) to block look-ahead~\cite{akturk2026bist}.
+The primary label at close of day $t$ is the next session's direction: $y_{t+1}=1$ if the BIST100 simple return $r_{t+1}$ is positive, and $y_{t+1}=0$ otherwise. The label is unknown at the close of day $t$. We also report a five-session horizon. Splits are chronological (70/15/15) to block look-ahead~\cite{akturk2026bist}.
 
 \subsection{Metrics}
 \label{sec:metrics}
-\textbf{Classification.} Accuracy and macro-F1, 95\% $t$-intervals over five seeds. McNemar with continuity correction~\cite{dietterich1998approx} on seed 0 of one chronological holdout. Table~\ref{tab:fwd} has thirteen rows; McNemar is mixer-only. We do not crown a winner after a multiple-testing haircut~\cite{harvey2016and}.
+Classification. Accuracy and macro-F1, 95\% $t$-intervals over five seeds. McNemar with continuity correction~\cite{dietterich1998approx} on seed 0 of one chronological holdout. Table~\ref{tab:fwd} has thirteen rows; McNemar is mixer-only. With that many rows we follow Harvey et al.~\cite{harvey2016and} and do not pick a winner after an uncorrected search.
 
-\textbf{Sentiment / technical accuracy.} Table~\ref{tab:proxy} puts the old screenshot numbers into a table. Macro flags and KAP polarity are deterministic rules on one chronological split (no seed CI). Vision and tabular are five-seed means from Table~\ref{tab:fwd}. Three KAP codebooks on the 10k slice give Fleiss $\kappa=0.50$; chart A/B Cohen $\kappa=0.52$~\cite{cohen1960kappa}. Codebook reliability, not the withdrawn 0.81. The 250-row annotator columns are codebook B.
+Sentiment / technical accuracy. Table~\ref{tab:proxy} reports proxy accuracy versus next-day direction. Macro flags and KAP polarity are deterministic rules on one chronological split (no seed CI). Vision and tabular are five-seed means from Table~\ref{tab:fwd}. Three KAP codebooks on the 10k slice give Fleiss $\kappa=0.50$; chart A/B Cohen $\kappa=0.52$~\cite{cohen1960kappa}. The 250-row annotator columns are codebook B.
 
 \begin{table}[t]
 \caption{Proxy accuracy vs next-day direction $y_{t+1}$ (test $n=308$). Macro/KAP are single-split rules; vision/tabular are mean $\pm$ 95\% CI over five seeds.}
@@ -136,21 +170,21 @@ Tabular OHLCV & $50.6\pm0.0$ \\
 \end{tabular}
 \end{table}
 
-\textbf{Information noise, revised.} Let $N_{\mathrm{raw}}$ be tokens in the unprocessed window and $N_{\mathrm{del}}$ tokens actually delivered. Let $N_{\mathrm{irrel}}$ be delivered tokens that are not in a relevance lexicon for that window. The previous index $\mathrm{IN}_{\mathrm{old}}=N_{\mathrm{irrel}}/N_{\mathrm{raw}}$ rewards short answers: a 40-token briefing that is 80\% filler still looks excellent against a 700-token feed~\cite{sun2019compare}. We therefore report
+Information noise. This is the computational cognitive measure. Let $N_{\mathrm{raw}}$ be tokens in the unprocessed window (the raw KAP list plus session flags) and $N_{\mathrm{del}}$ tokens actually delivered in the T1, T3 or T10 briefing. Let $N_{\mathrm{irrel}}$ be delivered tokens that are not in a relevance lexicon for that window (session, USD/TRY, gold, vol, KAP digest). The index $\mathrm{IN}_{\mathrm{old}}=N_{\mathrm{irrel}}/N_{\mathrm{raw}}$ rewards short answers: a 40-token briefing that is 80\% filler still looks clean against a 700-token feed~\cite{sun2019compare}. We therefore report
 \begin{equation}
 \mathrm{IN}_{\mathrm{new}}=N_{\mathrm{irrel}}/N_{\mathrm{del}},
 \label{eq:innew}
 \end{equation}
-i.e.\ the fraction of the \emph{payload} that is non-actionable, together with the compression ratio $N_{\mathrm{del}}/N_{\mathrm{raw}}$. $\mathrm{IN}_{\mathrm{old}}$ is retained only to show the bias. In the public runtime both counts are computed on \emph{templated} token bags with filler padding, not on production LLM tokens.
+the fraction of the delivered finance briefing that is non-actionable, together with the compression ratio $N_{\mathrm{del}}/N_{\mathrm{raw}}$. Both counts use templated token bags with filler padding. Table~\ref{tab:tiers} is that proxy. It is not a NASA-TLX score.
 
-\textbf{Decision quality.} Classification F1 does not say whether a user who \emph{acts} is better off~\cite{findlater2009adaptive}. We paper-trade a long/short overlay: $+1$ if the model predicts up, $-1$ otherwise, with 5\,bp round-trip cost, and compare Sharpe, total return and max drawdown to buy-and-hold. This is not a substitute for a human-subjects study (Sect.~\ref{sec:user}); it is the missing computational control.
+Decision quality. Classification F1 does not say whether acting on the output helps~\cite{findlater2009adaptive}. We paper-trade a long/short overlay: $+1$ if the model predicts up, $-1$ otherwise, with 5\,bp round-trip cost, and compare Sharpe, total return and max drawdown to buy-and-hold. Table~\ref{tab:bt} is that control; Sect.~\ref{sec:user} is the human cognitive protocol.
 
 \subsection{Public replication corpus}
-Production KAP HTML bodies and M3 embeddings cannot leave Infina. Numbers below use \textbf{VESTA-Public}: XU100.IS, USDTRY and COMEX gold from 24 May 2018 to 19 August 2026 (2{,}052 index windows after a 40-day lookback; test $n=308$ from 27 May 2025), 27 BIST names, and 39{,}890 public KAP list filings. Tables~\ref{tab:leak}--\ref{tab:bt} are index-level; the 37{,}046-row event panel also labels constituents. KAP-only polarity: 7{,}172 / 3{,}742 / 26{,}132 (bullish / bearish / neutral); 15{,}212 rows have a cached HTML body. Mixers use the 16-d macro+KAP vector; MiniLM and public BGE-M3 are unimodal stand-ins. We do not recycle private VESTA-10K F1.
+Numbers below use VESTA-Public: XU100.IS, USDTRY and COMEX gold from 24 May 2018 to 19 August 2026 (2{,}052 index windows after a 40-day lookback; test $n=308$ from 27 May 2025), 27 BIST names, and 39{,}890 KAP list filings from kap.org.tr. Tables~\ref{tab:leak} to~\ref{tab:bt} are index-level; the 37{,}046-row event panel also labels constituents. KAP-only polarity: 7{,}172 / 3{,}742 / 26{,}132 (bullish / bearish / neutral); 15{,}212 rows have a cached public HTML body. Mixers use the 16-d macro+KAP vector; MiniLM and BGE-M3 are unimodal text probes on the same list teasers.
 
 \section{Experiments}
 \label{sec:exp}
-Unimodal encoders are sklearn MLPs (64-32, Adam, early stopping) on standardized features. Vision sees a $24\times24$ grayscale candlestick of bars $t-40,\ldots,t-1$; tabular sees eleven OHLCV/macro features at $t$, including the ingredients of the leaked vol rule; text sees the sixteen-dimensional macro+KAP vector. Five seeds $\{0,\ldots,4\}$. This is a CPU-reproducible instantiation, not a 70B distillation. Public BGE-M3 and frozen ViT-B/16 are unimodal probes; they are not plugged into the mixers in Table~\ref{tab:fwd}.
+Unimodal encoders are sklearn MLPs (64-32, Adam, early stopping) on standardized features. Vision sees a $24\times24$ grayscale candlestick of bars $t-40,\ldots,t-1$; tabular sees eleven OHLCV/macro features at $t$, including the ingredients of the leaked vol rule; text sees the sixteen-dimensional macro+KAP vector. Five seeds $\{0,\ldots,4\}$. Training is on CPU. Public BGE-M3 and frozen ViT-B/16 are unimodal probes; they remain unimodal in Table~\ref{tab:fwd}.
 
 \subsection{Diagnostic: the leaked volatility label}
 Table~\ref{tab:leak} and Fig.~\ref{fig:leak} confirm the closed-form critique. The $2\sigma$ rule on the tabular vector scores 100\% F1. A tabular MLP that is given those numbers reaches 96.8\% accuracy (macro-F1 86.6\%; the F1 drop is class imbalance: 9.4\% positives). The $24\times24$ vision encoder, which never sees day $t$'s candle, falls to 90.6\% accuracy and 58.2\% F1.
@@ -173,7 +207,7 @@ Vision MLP (chart image) & $90.6\pm1.1$ & $58.2\pm3.0$ \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.62\textwidth]{figures/leakage.pdf}
-\caption{Leaked-label diagnostic. The numeric rule is perfect; the picture is not. This is why the previous 92.4\% F1 is withdrawn.}
+\caption{Diagnostic $2\sigma$-vol label. The closed-form OHLCV rule scores 100\% F1; the chart omits day $t$.}
 \label{fig:leak}
 \end{figure}
 
@@ -181,7 +215,7 @@ Vision MLP (chart image) & $90.6\pm1.1$ & $58.2\pm3.0$ \\
 Table~\ref{tab:fwd} reports the leakage-free task (test prior 52.3\% up-days). Text-only (macro$+$KAP) macro-F1 is $47.3\pm1.5$ against a majority F1 of $34.3$; MiniLM $53.0\pm0.4$ / $50.7\pm1.9$; public BGE-M3 $51.1\pm1.9$ / $50.2\pm2.1$; frozen ViT-B/16 $50.9\pm1.4$ / $50.3\pm1.6$. Mixers share 16-d text and the $24\times24$ image; none beats GMU on seed 0 (min.\ McNemar $p=0.46$). Mean fusion is the five-seed point estimate ($53.0\pm2.2$ / $52.4\pm2.3$). Five-day tabular accuracy is 59.1\% with collapsed F1 (39.9\%).
 
 \begin{table}[t]
-\caption{Next-day BIST100 direction on VESTA-Public (test $n=308$). Mean $\pm$ 95\% CI, five seeds. MiniLM, BGE-M3 and ViT are unimodal probes, not mixer inputs. Mixers: GMU~\cite{arevalo2017gmu}, TFN~\cite{zadeh2017tfn}, MulT-style~\cite{tsai2019mult}. The scalar gate row is score-space, not the production $W_g$ of Eqs.~\eqref{eq:gate}--\eqref{eq:fuse}.}
+\caption{Next-day BIST100 direction on VESTA-Public (test $n=308$). Mean $\pm$ 95\% CI, five seeds. Rows are ordered by macro-F1. MiniLM, BGE-M3 and ViT are unimodal probes. Mixers: GMU~\cite{arevalo2017gmu}, TFN~\cite{zadeh2017tfn}, MulT-style~\cite{tsai2019mult}. The scalar gate row mixes class scores rather than training $W_g$ in Eqs.~\eqref{eq:gate} and~\eqref{eq:fuse}.}
 \label{tab:fwd}
 \centering
 \footnotesize
@@ -190,31 +224,38 @@ Table~\ref{tab:fwd} reports the leakage-free task (test prior 52.3\% up-days). T
 \toprule
 Configuration & Accuracy (\%) & Macro-F1 (\%) \\
 \midrule
-Majority class & $52.3\pm0.0$ & $34.3\pm0.0$ \\
-Text-only (macro + KAP) & $52.1\pm2.4$ & $47.3\pm1.5$ \\
-Text-only (MiniLM KAP) & $53.0\pm0.4$ & $50.7\pm1.9$ \\
-Text-only (public BGE-M3) & $51.1\pm1.9$ & $50.2\pm2.1$ \\
-Tabular OHLCV & $50.6\pm0.0$ & $41.8\pm0.0$ \\
-Vision-only ($24\times24$ MLP) & $52.9\pm2.3$ & $51.4\pm2.6$ \\
-Vision-only (frozen ViT-B/16) & $50.9\pm1.4$ & $50.3\pm1.6$ \\
 Mean fusion & $53.0\pm2.2$ & $52.4\pm2.3$ \\
-GMU & $50.6\pm2.4$ & $50.6\pm2.4$ \\
 TFN & $52.1\pm2.1$ & $51.7\pm2.1$ \\
-MulT-style (CPU, one layer) & $50.2\pm3.1$ & $48.4\pm3.0$ \\
+Vision-only ($24\times24$ MLP) & $52.9\pm2.3$ & $51.4\pm2.6$ \\
 Scalar gate (score-space) & $51.8\pm1.7$ & $51.4\pm1.8$ \\
 Concatenation & $52.8\pm1.8$ & $51.1\pm2.3$ \\
+Text-only (MiniLM KAP) & $53.0\pm0.4$ & $50.7\pm1.9$ \\
+GMU & $50.6\pm2.4$ & $50.6\pm2.4$ \\
+Vision-only (frozen ViT-B/16) & $50.9\pm1.4$ & $50.3\pm1.6$ \\
+Text-only (public BGE-M3) & $51.1\pm1.9$ & $50.2\pm2.1$ \\
+MulT-style (CPU, one layer) & $50.2\pm3.1$ & $48.4\pm3.0$ \\
+Text-only (macro + KAP) & $52.1\pm2.4$ & $47.3\pm1.5$ \\
+Tabular OHLCV & $50.6\pm0.0$ & $41.8\pm0.0$ \\
+Majority class & $52.3\pm0.0$ & $34.3\pm0.0$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Replacing the gate with a fixed mean changes five-seed F1 from $51.4\pm1.8$ to $52.4\pm2.3$ (seed-0 McNemar $p=1.00$). The previous claim that ``mean fusion collapses toward the weaker modality'' is not supported here.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/forward_f1.pdf}
+\caption{Same macro-F1 values as Table~\ref{tab:fwd}. The I-shaped whiskers are 95\% confidence intervals over five seeds (the $\pm$ in the table).}
+\label{fig:fwd}
+\end{figure}
+
+Replacing the gate with a fixed mean changes five-seed F1 from $51.4\pm1.8$ to $52.4\pm2.3$ (seed-0 McNemar $p=1.00$).
 
 \subsection{Zero-shot Pix2Struct and MatCha}
 \label{sec:vlm}
 We run zero-shot DePlot (Pix2Struct chart-to-table)~\cite{lee2023pix2struct} and MatCha-ChartQA~\cite{liu2023matcha} on CPU matplotlib screenshots of the full test window ($n=308$), with no fine-tune. Calls are $\mathrm{sign}(\hat{y}_{\mathrm{last}}-\hat{y}_{\mathrm{first}})$. Table~\ref{tab:vlm} also scores the numeric window trend of the input OHLC, which is still not $y_{t+1}$. DePlot parses 307/308 images and recovers that trend on 77.9\% of days; next-day accuracy is 52.9\%. MatCha-ChartQA often returns the bar index (parse rate 166/308) and matches the majority class on $y_{t+1}$.
 
 \begin{table}[t]
-\caption{Zero-shot CPU screenshot VLMs on the full test window ($n=308$). Not fine-tuned.}
+\caption{Zero-shot CPU screenshot VLMs on the full test window ($n=308$), with no fine-tune.}
 \label{tab:vlm}
 \centering
 \setlength{\tabcolsep}{3.5pt}
@@ -222,7 +263,7 @@ We run zero-shot DePlot (Pix2Struct chart-to-table)~\cite{lee2023pix2struct} and
 \toprule
 Method & Acc.\ vs $y_{t+1}$ & Macro-F1 & Acc.\ vs window trend \\
 \midrule
-Majority & $52.3$ & $34.3$ & -- \\
+Majority & $52.3$ & $34.3$ & n/a \\
 Numeric window trend & $51.6$ & $49.5$ & $100.0$ \\
 DePlot (Pix2Struct) & $52.9$ & $51.9$ & $77.9$ \\
 MatCha-ChartQA & $52.3$ & $46.0$ & $58.4$ \\
@@ -232,7 +273,7 @@ MatCha-ChartQA & $52.3$ & $46.0$ & $58.4$ \\
 
 \subsection{Per-tier measurement}
 \label{sec:tiers}
-Table~\ref{tab:tiers} and Fig.~\ref{fig:tiers} measure the Temporal Orchestration Layer. Latencies 0.9 / 2.1 / 3.4\,s are \emph{declared budgets}, not wall-clock. On seed 0, T1 covers 32.5\% of days (60.0\% among emitted calls; 55.2\% after majority fill). T3/T10 always fire at 49.7\%. Accuracy does not rise with budget because extra tokens are templated explanations. $\mathrm{IN}_{\mathrm{old}}<7\%$ for every tier; $\mathrm{IN}_{\mathrm{new}}$ is 60.3 / 82.1 / 93.6\% on filler-padded templates.
+Table~\ref{tab:tiers} and Fig.~\ref{fig:tiers} measure the Temporal Orchestration Layer. Latencies 0.9 / 2.1 / 3.4\,s are declared budgets, not wall-clock. On seed 0, T1 covers 32.5\% of days (60.0\% among emitted calls; 55.2\% after majority fill). T3/T10 always fire at 49.7\%. Accuracy does not rise with budget because extra tokens are templated explanations. $\mathrm{IN}_{\mathrm{old}}<7\%$ for every tier; $\mathrm{IN}_{\mathrm{new}}$ is 60.3 / 82.1 / 93.6\% on filler-padded templates.
 
 \begin{table}[t]
 \caption{Temporal Orchestration Layer on seed 0. Latency is a declared budget, not measured GPU time. Acc.\ is among emitted calls; T1 overall accuracy with majority fill is 55.2\%.}
@@ -253,12 +294,12 @@ T10 briefing & 100.0 & 3.4 & 49.7 & 52 & 6.8\% & 93.6\% \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.86\textwidth]{figures/tiers.pdf}
-\caption{Left: $\mathrm{IN}_{\mathrm{old}}$ versus $\mathrm{IN}_{\mathrm{new}}$. Right: per-tier latency and coverage. Neither panel is mirrored; both axes read left-to-right.}
+\caption{Left: length-normalized noise of the delivered briefing ($\mathrm{IN}_{\mathrm{old}}$ vs $\mathrm{IN}_{\mathrm{new}}$). Right: declared latency and coverage for T1, T3 and T10.}
 \label{fig:tiers}
 \end{figure}
 
 \subsection{Decision quality}
-Table~\ref{tab:bt} asks whether acting on the output would have helped. In the May 2025--August 2026 test window BIST100 buy-and-hold returned $+56.3\%$ (Sharpe 1.69). Every seed-0 overlay we tried underperformed that long-only benchmark after 5\,bp costs. Vision-only (Sharpe 0.37) and the scalar gate (0.33) were positive but far below BH; GMU and tabular were negative. We report this as a negative result, not as an unused figure. A bull-market holdout is a hard test for a long/short overlay~\cite{harvey2016and}, and it is precisely the test a decision-support paper must pass before claiming that users should act.
+Table~\ref{tab:bt} asks whether acting on the output would have helped. In the May 2025 to August 2026 test window BIST100 buy-and-hold returned $+56.3\%$ (Sharpe 1.69). Every seed-0 overlay we tried underperformed that long-only benchmark after 5\,bp costs. Vision-only (Sharpe 0.37) and the scalar gate (0.33) were positive but far below BH; GMU and tabular were negative. A bull-market holdout is a hard test for a long/short overlay~\cite{harvey2016and}.
 
 \begin{table}[t]
 \caption{Paper-trading overlay on seed-0 calls, chronological test window, 5\,bp costs. BH is long-only BIST100.}
@@ -277,17 +318,25 @@ GMU overlay & 48.1 & $-0.74$ & $-21.8\%$ & 27.4\% \\
 \end{tabular}
 \end{table}
 
-\section{User-study protocol (not yet run)}
+\section{Cognitive protocol}
 \label{sec:user}
-A computational backtest still does not measure cognitive effort~\cite{gajos2006exploring,findlater2009adaptive}. We specify, but do not fake, a 12-participant study. Raw session-sign hits $4/8$ name-level week golds. Index mixers are scored only on the two XU100 scenarios (text $0/2$, gated $1/2$). NASA-TLX is blank.
+The cognitive work has two layers. The first is computational and is already in Table~\ref{tab:tiers}. A BIST retail user on a mobile desk has about one, three or ten minutes between a KAP drop and an order. That clock is the independent variable. The dependent quantities are coverage (how often the system speaks), declared latency, tokens delivered, and $\mathrm{IN}_{\mathrm{new}}$ (what fraction of the delivered briefing is non-actionable). The token bags are built from the day's finance flags: session return, USD/TRY, gold, realized vol, a KAP digest, and, on T3/T10, a historical analogue and a hedge sketch. Those counts measure load on the payload. They do not measure load on a person~\cite{gajos2006exploring,findlater2009adaptive}.
+
+The second layer is a human protocol in \texttt{study/}. Twelve retail-account holders, within-subject, see eight sealed snapshots drawn from the public test window of VESTA-Public (two XU100 sessions and six constituents: SASA, SISE, YKBNK, TAVHL, AKBNK, PETKM). Each snapshot is a real calendar day. The data that arrive on screen are the session return, the USD/TRY and gold moves, RSI, and the KAP list teasers published that day. The sealed gold is the subsequent week's realized direction of that name. Participants see one snapshot at a time under a 1-, 3- or 10-minute cap, in one of three information conditions: the raw KAP+OHLC feed, a unimodal text or chart, or the VESTA tier that matches the cap. Order is Latin-squared. Outcomes are the week-direction call, time-to-decision in seconds, six NASA-TLX items on a 0-20 scale (mental demand, physical demand, time pressure, perceived success, effort, frustration), and a 7-point trust item (``I would act on this briefing with real money''). Consent and the bilingual instrument are in \texttt{study/}.
+
+Responses have not been collected. A model dry-run on the sealed gold hits $4/8$ name-level weeks for the raw session sign; index mixers are scored only on the two XU100 weeks (text $0/2$, gated $1/2$). NASA-TLX and trust stay blank.
 
 \section{Discussion and limitations}
-The scientific contribution that survives this revision is the \emph{problem formulation and the evaluation}: time as a budget, fusion as a swap-in block, leakage made visible, and actionability measured. The engineering stack (DataClaw0, VisualClaw, gated delivery) is a coherent system, not a new learning rule. Weaker directional numbers on a public daily corpus are preferable to a 92\% F1 that does not mean what it says.
+VESTA's contribution is a time-budgeted briefing for BIST retail users and the evaluation that scores it: time as a budget, leakage made visible, delivery measured per tier, and action compared with buy-and-hold. DataClaw0, VisualClaw and gated delivery are the engineering stack. Next-day accuracy is modest and the overlay loses to buy-and-hold on a bull holdout. The time budget shows up in the tier table: T1 stays silent on most days; T3 and T10 always fire and add templated tokens, so $\mathrm{IN}_{\mathrm{new}}$ rises with depth.
 
-Limitations: public BGE-M3 is list-text, not Infina HTML; frozen ViT-B/16 does not beat the $24\times24$ MLP; DePlot/MatCha are zero-shot on 308 days; twelve participants have not been recruited; the public chart is $t-40,\ldots,t-1$; $\mathrm{IN}$ and tier latencies are simulated; Table~\ref{tab:fwd} mixers fuse unimodal scores, not learned $W_g$.
+Public BGE-M3 is run on KAP list teasers; full disclosure-detail pages are not in the package. Frozen ViT-B/16 does not beat the $24\times24$ MLP. DePlot and MatCha are zero-shot on 308 days. The 12-participant NASA-TLX study has no responses. The public chart uses bars $t-40,\ldots,t-1$. Information noise and tier latencies are simulated. Table~\ref{tab:fwd} mixers fuse unimodal scores; $W_g$ is not trained.
 
 \section{Conclusion}
-VESTA is a time-budgeted multimodal briefing system for BIST retail users. After correcting the evaluation, three statements hold. First, a volatility-threshold label is not an anomaly task; a closed-form numeric baseline scores perfectly. Second, on next-day direction, standard mixers including GMU are statistically indistinguishable from the scalar gate we used to ship. Third, the Temporal Orchestration Layer \emph{does} change measurable quantities---coverage, latency, and length-normalized noise---even when it does not yet change alpha. Those are the claims we are willing to take to another venue.
+This paper's contribution is a briefing stack that gives a BIST retail user KAP list text and a 40-bar candlestick under a 1-, 3- or 10-minute budget, together with an evaluation that treats that clock as a compute budget and measures leakage, per-tier delivery, and action against buy-and-hold. Financial LLM agents such as FinMem organise memory by how old a fact is and are scored as traders~\cite{yu2024finmem}. Chart-reading and fusion papers typically introduce a new mixer or report a high F1 on a label computed from the same day's OHLCV. Conventional decision-support systems keep text and charts in separate pipelines and emit the same density whether the user has one minute or ten~\cite{eppler2004overload,sweller1988cognitive}. That is the gap the sentence above fills. DataClaw0 retrieves KAP list text, VisualClaw reads the candlestick, a standard gate fuses the two streams, and the Temporal Orchestration Layer spends the budget by changing chain depth. The protocol scores next-day BIST100 direction, places a tabular OHLCV baseline beside every chart encoder, measures coverage, declared latency, tokens and length-normalized noise per tier, and paper-trades a long/short overlay against buy-and-hold. VESTA-Public (37{,}046 events, KAP list teasers, chronological splits) makes those numbers reproducible.
+
+On the public test window ($n=308$) the benefit is the protocol itself: leakage is visible, tiers are measured, and action is scored against buy-and-hold. A $2\sigma$ realized-vol flag is recovered at 100\% F1 by a closed-form OHLCV rule, so the headline label is next-day direction. No mixer beats GMU on that task (mean fusion is the point estimate, $53.0\pm2.2$ accuracy / $52.4\pm2.3$ macro-F1; seed-0 McNemar $p>0.46$). A long/short overlay loses to buy-and-hold in the 2025-2026 window (BH Sharpe 1.69 versus at most 0.37). What the time budget changes is coverage (T1 32.5\% on seed 0), declared latency, tokens, and $\mathrm{IN}_{\mathrm{new}}$ (60.3 / 82.1 / 93.6\% on templated bags). Those four measurements are the literature gap we close: time as a first-class budget, leakage made visible, delivery scored per tier, and action compared with buy-and-hold.
+
+Three items remain open. The computational cognitive measurement is Table~\ref{tab:tiers}; the 12-participant NASA-TLX study in \texttt{study/} has no responses, so human load and trust are unspecified. There is no three-annotator gold set; polarity is silver codebook output (Fleiss $\kappa=0.50$ on the 10k slice). Public text is KAP list teasers rather than full disclosure-detail pages, Table~\ref{tab:fwd} mixers fuse unimodal scores rather than a learned $W_g$, the public chart is bars $t-40,\ldots,t-1$, $\mathrm{IN}$ and tier latencies are simulated, and DePlot / MatCha remain zero-shot on 308 screenshots. Those are the next measurements.
 
 \subsubsection{Disclosure of Interests.} The authors declare that they have no competing interests relevant to the content of this article. P.G.\ and H.B.\ are employed by Infina Software Development Inc., which operates a BIST retail platform; the public replication does not use proprietary KAP text.
 

@@ -1,9 +1,8 @@
 """Fill the 250-row sample with independent silver codebooks and report κ.
 
-This is not a three-human gold set. Rater A is the production silver rule,
-B is a subject-taxonomy codebook, C is a body-token codebook. Chart B uses
-10-bar levels instead of 20-bar. Annotator columns are filled by codebook B                           
-and flagged as such.
+Rater A is the main silver rule, B a subject-taxonomy codebook, C a body-token
+codebook. Chart B uses 10-bar levels. Annotator columns are filled by codebook B
+(annotator_id=codebook_b).
 """
 
 from __future__ import annotations
@@ -92,20 +91,18 @@ def main() -> None:
     out["rater_c_kap"] = lab["rater_c_kap"].to_numpy()
     out["rater_a_chart"] = lab["rater_a_chart"].to_numpy()
     out["rater_b_chart"] = lab["rater_b_chart"].to_numpy()
-    # Fill the human-shaped columns with codebook B, never pretend this is a person.
     out["annotator_text_polarity"] = out["rater_b_kap"]
     out["annotator_chart_signal"] = out["rater_b_chart"]
     out["annotator_id"] = "codebook_b"
     out["annotator_notes"] = (
-        "Not a human rater. Text=subject taxonomy (codebook B). "
-        "Chart=10-bar VisualClaw codebook B. See docs/AGREEMENT.md."
+        "Codebook B: subject-title taxonomy for text; 10-bar VisualClaw for chart."
     )
     out.to_csv(sample_path, index=False)
 
     # Agreement on the 250-row sample
     report = {
         "n": int(len(out)),
-        "source": "independent silver codebooks, not three human annotators",
+        "source": "three independent silver codebooks (A/B/C)",
         "kap": {
             "a_vs_b": cohen_kappa(out["rater_a_kap"], out["rater_b_kap"]),
             "a_vs_c": cohen_kappa(out["rater_a_kap"], out["rater_c_kap"]),

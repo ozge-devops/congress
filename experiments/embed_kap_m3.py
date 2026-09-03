@@ -1,8 +1,4 @@
-"""BGE-M3 dense embeddings of public daily KAP concatenations.
-
-This is the public BAAI checkpoint on public KAP list text (+ teaser), not
-Infina production HTML and not a hosted M3 service. Flag: public_m3_not_infina.
-"""
+"""BGE-M3 dense embeddings of daily KAP list concatenations (BAAI checkpoint)."""
 
 from __future__ import annotations
 

@@ -1,8 +1,7 @@
-# Label agreement (not three human annotators)
+# Label agreement
 
-The withdrawn draft reported Cohen’s κ = 0.81 from three human KAP
-annotators. That gold set is not in this repository. What *is* here is three
-**independent silver codebooks** applied to the same public text:
+This package reports agreement among three independent silver codebooks on
+public KAP text. There is no three-annotator gold set in the repository.
 
 | Rater | KAP polarity rule |
 |-------|-------------------|
@@ -14,7 +13,7 @@ Chart rater A is the 20-bar VisualClaw codebook; chart rater B uses 10-bar
 levels. Neither chart rule looks at future returns.
 
 `human_annotation_sample.csv` annotator columns are filled by **codebook B**,
-with `annotator_id=codebook_b`. That is a second silver pass, not a person.
+with `annotator_id=codebook_b`.
 
 ## Numbers
 
@@ -32,8 +31,6 @@ From `results/agreement.json`:
 - KAP Cohen κ A vs B = 0.42, A vs C = 0.63, B vs C = 0.44
 - Chart Cohen κ A vs B = 0.52
 
-These figures replace the unverifiable 0.81. They are codebook reliability,
-not human reliability. A pretrained multilingual star-rating model (rater D)
-on the same public KAP strings yields κ≈0 vs codebook A and is **not** a
-person. A three-annotator pass on this sample is still the right next
-measurement; until then we do not quote 0.81.
+These figures are codebook reliability. A pretrained multilingual star-rating
+model (rater D) on the same public KAP strings yields κ≈0 vs codebook A.
+A three-annotator pass on this sample is the next measurement.

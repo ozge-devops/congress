@@ -1,8 +1,7 @@
-# User-study materials (not yet run)
+# User-study materials
 
-This folder is the protocol for §6 of the paper.
-No participants have been run yet. `responses.csv` is a header only;
-do not fill it with model scores and call it a user study.
+This folder is the executable protocol for §6 of `paper/vesta.tex`.
+`responses.csv` is a header only; no participant answers have been collected.
 
 ## Design
 
@@ -16,7 +15,7 @@ do not fill it with model scores and call it a user study.
 
 1. Direction call (up / down / abstain) vs the subsequent week's realized move (`study/gold.json`, experimenter-only).
 2. Time-to-decision (seconds).
-3. NASA-TLX (six 0–20 items in `instrument.csv`).
+3. NASA-TLX (six 0-20 items in `instrument.csv`).
 4. Trust (7-point).
 
 ## How to run
@@ -27,13 +26,13 @@ Interactive (one participant; writes `responses.csv`):
 PYTHONPATH=src python experiments/run_study.py p01
 ```
 
-Model dry-run (not a human; NASA-TLX blank):
+Model dry-run (NASA-TLX left blank):
 
 ```bash
 PYTHONPATH=src python experiments/simulate_study.py
 ```
 
-The file `pilot_model_responses.csv` is a **model** dry-run on the eight
+The file `pilot_model_responses.csv` is a model dry-run on the eight
 sealed scenarios (real week-direction gold). The public mixer is XU100-level:
 
 | condition | participant_id | scored on | week hit |
@@ -42,11 +41,11 @@ sealed scenarios (real week-direction gold). The public mixer is XU100-level:
 | unimodal text MLP | vesta_text_pilot | 2 XU100 weeks | 0/2 |
 | gated VESTA | vesta_gated_pilot | 2 XU100 weeks | 1/2 |
 
-NASA-TLX is blank. Do **not** copy this into `responses.csv` and call it
-a 12-person user study. Constituent scenarios are abstains for the index mixer.
+NASA-TLX is blank. Constituent scenarios are abstains for the index mixer.
+Do not copy this file into `responses.csv`.
 
 1. Consent: `consent.md`.
-2. Show one scenario at a time from `scenarios.json`. Do **not** show `gold.json`.
+2. Show one scenario at a time from `scenarios.json`. Keep `gold.json` sealed.
 3. Log answers in `responses.csv` (header only until the study is run).
 4. Score with `PYTHONPATH=src python experiments/score_study.py` once responses exist.
 

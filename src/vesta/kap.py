@@ -32,7 +32,7 @@ NOISE_SUBJECTS = (
     "pay dışında sermaye piyasası aracı işlemlerine ilişkin bildirim",
 )
 
-
+# BIST tickers without .IS suffix
 DEFAULT_TICKERS = [
     "THYAO",
     "PGSUS",
@@ -132,7 +132,7 @@ def _split_fetch(oid: str, start: date, end: date, cap: int = 2000) -> list[dict
 
 
 def fetch_ticker_range(ticker: str, oid: str, start: date, end: date) -> list[dict]:
-
+    # Year-sized windows: the 8-year span returns HTTP 500 from KAP.
     raw: list[dict] = []
     y = start.year
     while y <= end.year:
@@ -208,7 +208,7 @@ def download_kap(
 
 
 def inventory(rows: list[dict]) -> dict:
-    """Counts for the public KAP list cache (subjects + teasers, not HTML bodies)."""
+    """Counts for the KAP list cache (subjects and teasers)."""
     from collections import Counter
 
     tickers = Counter(r["ticker"] for r in rows)

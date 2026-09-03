@@ -1,8 +1,7 @@
 """Zero-shot DePlot (Pix2Struct) and MatCha-ChartQA on candlestick screenshots.
 
-CPU-only, not fine-tuned. Default is a stride subsample of the chronological
-test window so a laptop can finish; pass ``--every 1`` for all 308 days.
-Caches are keyed by date and resume after interruption.
+Runs on CPU. Default is a stride subsample of the test window; pass
+``--every 1`` for all 308 days. Caches are keyed by date and resume.
 """
 
 from __future__ import annotations
@@ -98,7 +97,7 @@ def main() -> None:
         "note": (
             "Zero-shot CPU. DePlot = Pix2Struct chart-to-table. "
             "MatCha-ChartQA is asked for first and last y-values. "
-            "Not a fine-tune. Window-trend is sign(last close − first close) of the same OHLC."
+            "Window-trend is sign(last close - first close) of the same OHLC."
         ),
         "window_trend": {
             **binary_scores(y, trend),

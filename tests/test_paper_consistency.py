@@ -4,7 +4,7 @@ Fails if a rounded table figure in the manuscript drifts from the JSON that
 produced it. Does not invent human-study scores.
 """
 
-from __future__ import annotations 
+from __future__ import annotations
 
 import json
 import re
@@ -92,7 +92,7 @@ def test_technical_proxy_is_mean_vision_not_last_seed():
     tech = round(100.0 * r["technical_accuracy_proxy"], 1)
     assert vis == tech == 52.9
     # §metrics must not attribute 50.6% to the vision encoder
-    metrics = paper.split("textbf{Sentiment")[1].split("textbf{Information")[0]
+    metrics = paper.split("Sentiment / technical accuracy")[1].split("Information noise")[0]
     assert "50.6" not in metrics or "tabular" in metrics.lower()
     assert "52.9" in paper
     assert "tab:proxy" in paper

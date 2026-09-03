@@ -1,4 +1,4 @@
-"""Evaluation metrics, including the revised information-noise measure."""
+"""Evaluation metrics, including length-normalized information noise."""
 
 from __future__ import annotations
 
@@ -58,8 +58,8 @@ def information_noise(
 ) -> NoiseReport:
     """Length-aware noise.
 
-    Old (reviewer H2): n_irrelevant / n_raw — short answers look good even if mostly junk.
-    New: n_irrelevant / n_delivered — precision of the delivered payload (Sun et al., 2019).
+    IN_old = n_irrelevant / n_raw. Short answers score well even when most tokens are filler.
+    IN_new = n_irrelevant / n_delivered. Precision of the delivered payload (Sun et al., 2019).
     """
     n_del = max(len(delivered_tokens), 1)
     n_irrel = sum(1 for tok in delivered_tokens if tok not in relevant)

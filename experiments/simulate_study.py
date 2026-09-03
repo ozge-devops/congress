@@ -1,14 +1,12 @@
-"""Three-condition dry-run on the eight sealed scenarios — not human NASA-TLX.
+"""Three-condition model dry-run on the eight sealed scenarios.
 
-Conditions use real public features and the fitted public mixers:
-  raw       — sign of that *name's* session return vs that name's week gold
-  unimodal  — text-only MLP, XU100 scenarios only (index mixer)
-  vesta     — scalar gate, XU100 scenarios only
+Conditions use public features and the fitted mixers:
+  raw       : sign of that name's session return vs that name's week gold
+  unimodal  : text-only MLP, XU100 scenarios only (index mixer)
+  vesta     : scalar gate, XU100 scenarios only
 
-Constituent scenarios are abstains for the model arms: the public mixer is
-index-level and must not be scored against a single-name week gold.
-
-NASA-TLX / trust stay blank. study/responses.csv is not written.
+Index mixers abstain on constituent names. NASA-TLX and trust stay blank.
+Does not write study/responses.csv.
 """
 
 from __future__ import annotations
@@ -47,7 +45,7 @@ def _call(dec: str, proba: float, pid: str, cond: str, sc_id: str, elapsed: floa
         "tlx_effort": "",
         "tlx_frustration": "",
         "trust": "",
-        "notes": "MODEL PILOT not a human. NASA-TLX left blank on purpose.",
+        "notes": "Model dry-run; NASA-TLX blank.",
         "proba": f"{proba:.4f}",
     }
 
@@ -84,7 +82,7 @@ def main() -> None:
         rows.append(_call(raw_dec, abs(float(sc["session_ret"])), "vesta_raw_pilot", "raw", sc["scenario_id"], 0.01))
         index_only = sc.get("ticker") == "XU100.IS"
         if s is None or not index_only:
-            # Public mixers are XU100-level. Do not score them on a constituent's week gold.
+            # Public mixers are XU100-level; skip constituent week gold.
             rows.append(_call("abstain", 0.5, "vesta_text_pilot", "unimodal", sc["scenario_id"], fit_s))
             rows.append(_call("abstain", 0.5, "vesta_gated_pilot", "vesta", sc["scenario_id"], fit_s))
             continue

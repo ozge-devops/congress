@@ -1,5 +1,5 @@
-"""Public multilingual MiniLM embeddings of daily KAP text (DataClaw0 stand-in, not BGE-M3)."""
-                                    
+"""Multilingual MiniLM embeddings of daily KAP list text."""
+
 from __future__ import annotations
 
 import json

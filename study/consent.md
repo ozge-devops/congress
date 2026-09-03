@@ -1,4 +1,4 @@
-# Informed consent — VESTA briefing study
+# Informed consent: VESTA briefing study
 
 You are invited to a 45-minute study of how retail investors use Borsa Istanbul
 briefings under time pressure. You will see eight historical market snapshots

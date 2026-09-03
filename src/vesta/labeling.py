@@ -1,21 +1,19 @@
 """Silver-label codebook for the public VESTA corpus.
 
-These labels are deterministic functions of public OHLCV and a macro brief.
-They are *not* a substitute for the three-annotator KAP protocol; they make the
-public replication trainable without leaking the headline target from the chart.
+Labels are deterministic functions of public OHLCV and a KAP/macro brief.
 
-PRIMARY (leakage-free)
-    y_direction_1d, y_direction_5d  — sign of future BIST/stock return
-    y_excess_1d                     — next return above trailing 20-day mean
+PRIMARY
+    y_direction_1d, y_direction_5d  : sign of future BIST/stock return
+    y_excess_1d                     : next return above trailing 20-day mean
 
-DIAGNOSTIC (leaks from the numeric input; do not train the headline model on it)
-    y_leak_vol                      — 20-day realized vol > mean+2σ of 60-day vol
+DIAGNOSTIC (function of the tabular vector at t)
+    y_leak_vol                      : 20-day realized vol > mean+2σ of 60-day vol
 
-SILVER PERCEPTION LABELS (rule-based stand-ins for the original three axes)
-    kap_polarity                    — bullish | bearish | neutral from KAP text only
-    text_polarity                   — brief stance (macro + KAP lexicon)
-    chart_signal                    — breakout | support_hold | divergence | none
-    anomaly_flag                    — alias of y_leak_vol, kept for the old schema
+PERCEPTION (rule-based)
+    kap_polarity                    : bullish | bearish | neutral from KAP text only
+    text_polarity                   : brief stance (macro + KAP lexicon)
+    chart_signal                    : breakout | support_hold | divergence | none
+    anomaly_flag                    : alias of y_leak_vol
 """
 
 from __future__ import annotations
@@ -74,7 +72,7 @@ def chart_signal(ohlc: np.ndarray) -> ChartSignal:
 
     Priority: divergence > breakout > support_hold > none.
     All thresholds use *prior* bars so the label is a function of the visible
-    chart, matching the original VisualClaw annotation axis — not the future.
+    chart, matching the original VisualClaw annotation axis.
     """
     if ohlc is None or len(ohlc) < 25:
         return "none"

@@ -16,7 +16,7 @@ def main() -> None:
     with responses.open() as fh:
         rows = [r for r in csv.DictReader(fh) if r.get("participant_id")]
     if not rows:
-        print("No participant rows in study/responses.csv — study not run. Not scoring.")
+        print("No participant rows in study/responses.csv. Study not run.")
         sys.exit(0)
     n = 0
     hits = 0

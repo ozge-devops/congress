@@ -31,7 +31,7 @@ def render_candles(ohlc: np.ndarray, size: int = 32) -> np.ndarray:
 
 
 def render_screenshot(ohlc: np.ndarray, title: str = "BIST") -> "Image.Image":
-    """RGB candlestick screenshot for Pix2Struct / MatCha (not the 24×24 MLP tensor)."""
+    """RGB candlestick screenshot for Pix2Struct / MatCha."""
     import matplotlib
 
     matplotlib.use("Agg")

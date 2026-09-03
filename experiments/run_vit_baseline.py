@@ -1,9 +1,8 @@
-"""Frozen ViT-B/16 CLS probe on matplotlib candlestick screenshots.
+"""Frozen ImageNet ViT-B/16 CLS probe on matplotlib candlestick screenshots.
 
-Not a 70B teacher. Pretrained ImageNet ViT, linear/MLP head on next-day
-direction. Embeddings are cached by date so the run resumes.
+A sklearn MLP head predicts next-day direction. Embeddings are cached by date.
 """
-                                      
+
 from __future__ import annotations
 
 import json
@@ -99,7 +98,7 @@ def main() -> None:
         "acc": mean_ci(accs),
         "f1": mean_ci(f1s),
         "seed0": binary_scores(yte, (predict_proba(fit_unimodal("vitb16", Xtr, ytr, 0), Xte) >= 0.5).astype(int)),
-        "note": "ImageNet ViT-B/16 CLS + sklearn MLP. Not a 70B teacher, not fine-tuned ViT.",
+        "note": "Frozen ImageNet ViT-B/16 CLS plus a sklearn MLP head.",
     }
     dest = ROOT / "results" / "vit_baseline.json"
     dest.write_text(json.dumps(report, indent=2, default=float))

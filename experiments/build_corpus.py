@@ -1,4 +1,4 @@
-"""Build the silver-labeled public VESTA corpus on disk."""           
+"""Build the silver-labeled public VESTA corpus on disk."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ def main() -> None:
     print("Downloading constituents …")
     stocks = download_constituents(cache)
     print(f"  got {len(stocks)} equity series")
-    print("Fetching recent Yahoo headlines (not a historical news archive) …")
+    print("Fetching recent Yahoo headlines …")
     news_bag = fetch_recent_news(
         ["XU100.IS", *CONSTITUENTS.keys()],
         cache / "yahoo_news.json",

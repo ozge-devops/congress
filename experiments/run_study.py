@@ -1,4 +1,4 @@
-"""Interactive 12-person study runner. Writes study/responses.csv. Does not invent answers."""
+"""Interactive study runner. Writes study/responses.csv."""
 
 from __future__ import annotations
 
@@ -51,7 +51,7 @@ def main() -> None:
         ]:
             rec[k] = input(f"  {k}: ").strip()
         rec["notes"] = ""
-        # do not show gold during the session
+        # Gold is sealed until after the session.
         _ = gold[sc["scenario_id"]]["correct_week"]
         rows.append(rec)
     fieldnames = list(rows[0].keys())

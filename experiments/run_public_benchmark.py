@@ -106,7 +106,7 @@ def delivered_payload(tier: str, relevant: set[str], text_vec: np.ndarray) -> li
         if tok in flags and not flags[tok]:
             continue
         live.append(tok)
-    # pad to the budgeted length with filler (simulates residual boilerplate)
+    # Pad to the budgeted length with filler tokens.
     while len(live) < spec["max_tokens"] // 8:
         live.append(FILLER[len(live) % len(FILLER)])
     return live[: spec["max_tokens"]]
@@ -162,7 +162,7 @@ def run() -> dict:
         "fwd_pos_rate_test": float(yte_fwd.mean()),
     }
 
-    # --- Diagnostic leaked-label task ---
+    # Diagnostic leaked-label task
     leak_rule = closed_form_vol_rule(Xte_tab)
     report["leak_closed_form"] = evaluate_split("closed_form", yte_leak, leak_rule)
 
@@ -178,7 +178,7 @@ def run() -> dict:
         leak_rows.setdefault("vision_acc", []).append(binary_scores(yte_leak, vis_p)["accuracy"])
     report["leak_learned"] = {k: mean_ci(v) for k, v in leak_rows.items()}
 
-    # --- Primary forward-return task ---
+    # Primary forward-return task
     fwd_f1: dict[str, list[float]] = {k: [] for k in [
         "majority", "text", "vision", "tabular", "concat", "mean", "gmu", "tfn", "gated", "mult"
     ]}
@@ -270,7 +270,7 @@ def run() -> dict:
     report["forward"] = {
         k: {"f1": mean_ci(fwd_f1[k]), "acc": mean_ci(fwd_acc[k])} for k in fwd_f1
     }
-    # Single-seed reporting (McNemar, tiers, overlays) uses seed 0, not the last loop seed.
+    # McNemar, tiers, and overlays use seed 0.
     assert seed0_preds is not None and seed0_g is not None and seed0_gate_proba is not None
     last_preds = seed0_preds
     last_g = seed0_g
@@ -293,7 +293,7 @@ def run() -> dict:
     report["forward_seed0_mcnemar"] = mcn
     report["mcnemar_seed"] = 0
 
-    # 5-day horizon, gated vs tabular (single seed 0 already in last_preds — refit quickly)
+    # 5-day horizon, gated vs tabular (seed 0). Refit quickly.
     tab5 = fit_unimodal("tabular5", Xtr_tab, ytr_fwd5, 0)
     vis5 = fit_unimodal("vision5", Xtr_img, ytr_fwd5, 0)
     txt5 = fit_unimodal("text5", Xtr_txt, ytr_fwd5, 0)
@@ -323,7 +323,7 @@ def run() -> dict:
     }
     report["forward5"] = {k: binary_scores(yte_fwd5, v) for k, v in pred5.items()}
 
-    # --- Tiers ---
+    # Tiers
     tier_out = {}
     for tier, spec in TIER_SPECS.items():
         if spec["gate_tau"] > 0:
@@ -331,7 +331,7 @@ def run() -> dict:
         else:
             mask = np.ones(len(test), dtype=bool)
         pred = last_preds["gated"].copy()
-        # T1 abstains (falls back to majority) when the gate is indecisive
+        # T1 abstains when the gate is indecisive (majority fill).
         if spec["gate_tau"] > 0:
             pred = np.where(mask, pred, majority)
         scores = binary_scores(yte_fwd, pred)
@@ -364,14 +364,14 @@ def run() -> dict:
     report["backtest_vision"] = backtest(last_preds["vision"], te_rets)
     report["backtest_gmu"] = backtest(last_preds["gmu"], te_rets)
 
-    # Sentiment / technical proxy accuracies on the test window (annotator-free proxies)
-    # Sentiment proxy: text polarity vs subsequent return sign
+    # Sentiment / technical proxy accuracies on the test window.
+    # Sentiment proxy: text polarity vs subsequent return sign.
     sent_true = yte_fwd
     sent_pred = (Xte_txt[:, 0] - Xte_txt[:, 1] + Xte_txt[:, 2] - Xte_txt[:, 3] > 0).astype(int)
     report["sentiment_accuracy_proxy"] = float((sent_pred == sent_true).mean())
     kap_signed = Xte_txt[:, -1] if Xte_txt.shape[1] >= 16 else np.zeros(len(Xte_txt))
     report["sentiment_accuracy_kap"] = float(((kap_signed > 0).astype(int) == sent_true).mean())
-    # Mean vision accuracy over seeds — do not quote last-seed vision as "technical proxy".
+    # Mean vision accuracy over five seeds.
     report["technical_accuracy_proxy"] = float(report["forward"]["vision"]["acc"]["mean"])
     report["technical_accuracy_tabular"] = float(report["forward"]["tabular"]["acc"]["mean"])
     report["technical_accuracy_seed0_vision"] = float((last_preds["vision"] == yte_fwd).mean())
