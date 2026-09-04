@@ -5,7 +5,7 @@ Time-budgeted multimodal briefing for BIST retail users.
 Peri Gunes (Infina Software), Ozge Zelal Kucuk (Istanbul Aydin University),
 Harun Benli (Infina Software).
 
-Camera-ready PDF: [paper/vesta.pdf](paper/vesta.pdf).
+Camera-ready PDF:[paper/vesta.pdf](paper/vesta.pdf).
 Source: [paper/vesta.tex](paper/vesta.tex). Word is [paper/vesta.docx](paper/vesta.docx)
 if you cannot open LaTeX; the LNCS page breaks are only in the PDF.
 
@@ -58,39 +58,39 @@ PYTHONPATH=src python experiments/make_figures.py
 PYTHONPATH=src python tests/test_paper_consistency.py
 ```
 
-On the public test window (27 May 2025 to 19 August 2026, 308 index days):
+On the public test window(27 May 2025 to 19 August 2026, 308 index days):
 
-- No mixer beats GMU on next-day direction (McNemar \(p > 0.46\) on seed 0).
+-No mixer beats GMU on next-day direction (McNemar \(p > 0.46\) on seed 0).
   Mean fusion is the point estimate: 53.0% accuracy / 52.4% macro-F1.
-- Proxy accuracy vs next-day direction: macro flags 54.9%, KAP polarity 49.7%,
+-Proxy accuracy vs next-day direction: macro flags 54.9%, KAP polarity 49.7%,
   vision \(52.9\pm2.3\)%, tabular \(50.6\pm0.0\)%. Codebook Fleiss \(\kappa=0.50\)
   on the 10k slice; chart A/B Cohen \(\kappa=0.52\).
-- T1 covers 32.5% of days on seed 0. \(\mathrm{IN}_{\mathrm{new}}\) is 60-94%
+-T1 covers 32.5% of days on seed 0. \(\mathrm{IN}_{\mathrm{new}}\) is 60-94%
   on templated token bags.
-- Buy-and-hold Sharpe in that window is 1.69; every seed-0 overlay is lower.
+-Buy-and-hold Sharpe in that window is 1.69; every seed-0 overlay is lower.
 
 DePlot / MatCha are zero-shot on all 308 test screenshots (no fine-tune).
 They need the optional CPU torch stack (`requirements-vlm.txt`) and are slow.
 
 Python 3.10 is enough for the sklearn tables. First run downloads XU100, USDTRY
-and gold into `data/cache/`; after that it stays offline.
+and gold into `data/cache/`;after that it stays offline.
 
 ## Paper
 
 ```bash
 cd paper
-pdflatex vesta.tex && bibtex vesta && pdflatex vesta.tex && pdflatex vesta.tex
+pdflatex vesta.tex && bibtex vesta && pdflatex vesta.tex&&pdflatex vesta.tex
 ```
 
-`llncs.cls` in that folder is Springer LNCS 2.26. For Word: `bash paper/export_docx.sh`
+`llncs.cls` in that folder is Springer LNCS 2.26.For Word:`bash paper/export_docx.sh`
 (needs pandoc).
 
 ## What is still missing
 
 A three-annotator gold set, a 12-investor NASA-TLX study (`study/` has the
-protocol; `responses.csv` is a header only), full KAP disclosure-detail pages,
-and a GPU Pix2Struct/MatCha fine-tune. Table 2 mixers fuse unimodal scores;
-learned GMU weights $W_v,W_t,W_z$ are unused. The public chart window is bars \(t-40,\ldots,t-1\); the
+protocol;`responses.csv` is a header only), full KAP disclosure-detail pages,
+and a GPU Pix2Struct/MatCha fine-tune.Table 2 mixers fuse unimodal scores;
+learned GMU weights $W_v,W_t,W_z$ are unused.The public chart window is bars \(t-40,\ldots,t-1\); the
 tabular features and the vol diagnostic are at day \(t\).
 
-Questions: ozelalkucuk@stu.aydin.edu.tr, pgunes@infina.com.tr, hbenli@infina.com.tr.
+Questions: pgunes@infina.com.tr, hbenli@infina.com.tr , ozelalkucuk@stu.aydin.edu.tr
