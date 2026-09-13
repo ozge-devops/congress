@@ -7,7 +7,7 @@ The labels are deterministic functions of public OHLCV and KAP list text.
 
 | File | What it is |
 |------|------------|
-| `events.parquet` / `events.csv` | Full event table (37,046 rows) including 40-bar OHLC windows |
+| `events.parquet` | Full event table (37,046 rows) including 40-bar OHLC windows. Canonical. |
 | `events_10k.parquet` / `events_10k.csv` | Paper-sized slice: every index day + largest constituent moves |
 | `label_stats.json` / `label_stats_10k.json` | Class counts, KAP linkage, date range |
 | `kap_inventory.json` | 39,890 public KAP list filings (27 tickers; scrape 2 Jan 2018 to 27 Aug 2026) |

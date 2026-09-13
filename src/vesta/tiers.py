@@ -68,7 +68,7 @@ TOKEN_HELP = {
     "usdtry_down": "USD/TRY dropped",
     "gold_up": "Gold jumped",
     "gold_down": "Gold dropped",
-    "hist_analog": "Templated analogue token on T3/T10 (not a retrieved neighbour)",
+    "hist_analog": "Retrieved prior KAP day (M3 cosine, α=1, β unused; no portfolio)",
     "sector_note": "Sector context for the ticker",
     "macro_correlator": "Macro explanation sketch (T10)",
     "hedge_sketch": "Hedge sketch (T10)",

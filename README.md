@@ -40,6 +40,7 @@ Then open `http://127.0.0.1:43187/` (console) or `/docs` (OpenAPI).
 | GET | `/v1/results` | Paper table index |
 | GET | `/v1/results/public_benchmark` | Leak, forward, tier, overlay JSON |
 | GET | `/v1/results/learned_gmu` | Learned Arevalo GMU ($W_v,W_t,W_z$) |
+| GET | `/v1/results/hop` | M3 day-level hop ($\alpha=1$, no portfolio) |
 | GET | `/v1/results/study_pilot` | Model dry-run on the sealed study gold |
 | GET | `/v1/results/vlm` | Zero-shot DePlot / MatCha JSON |
 | GET | `/v1/tickers` | Public panel tickers |
@@ -47,10 +48,9 @@ Then open `http://127.0.0.1:43187/` (console) or `/docs` (OpenAPI).
 T1 stays silent when `|g-0.5| ≤ 0.18`. Mixers are seed-0 sklearn fits on the
 chronological train+val split. GitHub Actions runs `tests/test_api.py`.
 
-VESTA has three layers. The designed DataClaw0 loop is portfolio-conditioned
-KAP retrieval; the public tables and HTTP console use a 16-d macro+KAP bag
-and templated tokens (T3/T10 insert `hist_analog`, they do not retrieve a
-neighbour). VisualClaw reads a 40-bar candlestick (bars \(t-40,\ldots,t-1\))
+VESTA has three layers. DataClaw0 runs an M3 day-level hop on cached KAP
+vectors ($\alpha=1$, no portfolio; analogue hit 49.8% on 305 test days).
+The hop does not enter the 16-d mixer. VisualClaw reads a 40-bar candlestick (bars \(t-40,\ldots,t-1\))
 as a \(24\times24\) image. Score-space mixers combine the two streams
 (GMU, tensor fusion, 1-layer attention, mean, concat). Learned GMU is a paper
 ablation (`GET /v1/results/learned_gmu`). The Temporal Orchestration Layer
@@ -70,9 +70,11 @@ Bibliography check: [docs/BIBLIOGRAPHY_AUDIT.md](docs/BIBLIOGRAPHY_AUDIT.md).
 ## Data
 
 `data/vesta_public/` is the silver-labeled panel: 37,046 events, 27 BIST names
-plus XU100, 24 May 2018 to 19 August 2026. Splits are chronological by calendar
-date (70/15/15). 19,645 rows have a same-day KAP list teaser; 15,212 have a
-cached HTML body from kap.org.tr. Public BGE-M3 in the forward table uses the same list text.
+plus XU100, 24 May 2018 to 19 August 2026. The canonical table is
+`events.parquet` (the 55 MB `events.csv` export is gitignored). Splits are
+chronological by calendar date (70/15/15). 19,645 rows have a same-day KAP
+list teaser; 15,212 have a cached HTML body from kap.org.tr. Public BGE-M3
+in the forward table uses the same list text.
 
 Rebuild from Yahoo + KAP if you need to:
 
@@ -90,6 +92,7 @@ The JSON under `results/` is copied into the LaTeX tables. To regenerate:
 ```bash
 PYTHONPATH=src python experiments/run_public_benchmark.py   # leak, forward, tiers, overlay
 PYTHONPATH=src python experiments/run_learned_gmu.py        # learned Arevalo GMU
+PYTHONPATH=src python experiments/run_hop.py                # M3 day-level hop
 PYTHONPATH=src python experiments/label_agreement.py
 PYTHONPATH=src python experiments/embed_kap.py              # MiniLM
 PYTHONPATH=src python experiments/embed_kap_m3.py           # public BGE-M3

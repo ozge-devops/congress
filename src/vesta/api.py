@@ -35,7 +35,7 @@ app = FastAPI(
     description=(
         "Time-budgeted multimodal briefing for BIST retail users. "
         "Public path: 16-d macro+KAP bag, VisualClaw, seed-0 score-space mixers. "
-        "T1 may stay silent; T3 and T10 always emit templated tokens. "
+        "T3/T10 attach an M3 day-level hop (α=1, no portfolio); it does not enter the mixer. "
         "Learned GMU is a paper ablation (GET /v1/results/learned_gmu)."
     ),
     lifespan=lifespan,
@@ -197,7 +197,7 @@ def results_table(name: str):
     except KeyError:
         raise HTTPException(
             status_code=404,
-            detail="Unknown table. Use public_benchmark, agreement, vlm, vit, kap_m3, kap_minilm, learned_gmu, study_pilot.",
+            detail="Unknown table. Use public_benchmark, agreement, vlm, vit, kap_m3, kap_minilm, learned_gmu, study_pilot, hop.",
         )
 
 

@@ -1,0 +1,32 @@
+{
+  "executed": true,
+  "encoder": "BAAI/bge-m3",
+  "scope": "day-level KAP list concatenation",
+  "alpha": 1.0,
+  "beta_fitted": false,
+  "portfolio": false,
+  "n_test": 308,
+  "n_retrieved": 308,
+  "mean_cosine": 0.890761842394804,
+  "analog_hit_rate": 0.49836065573770494,
+  "n_analog_scored": 305,
+  "peer_coverage": 1.0,
+  "mixer_unchanged": true,
+  "t3_t10_accuracy_still": 0.497,
+  "note": "Retrieved prior KAP day does not enter the 16-d mixer. T3/T10 next-day accuracy stays 49.7% on seed 0.",
+  "example": {
+    "query_date": "2025-05-27",
+    "hop_date": "2019-03-06",
+    "cosine": 0.8211514353752136,
+    "n_candidates": 1943,
+    "alpha": 1.0,
+    "beta_fitted": false,
+    "portfolio": false,
+    "encoder": "BAAI/bge-m3",
+    "y_t1": 0,
+    "hop_y_t1": 0,
+    "analog_hit": true,
+    "peer_ticker": "ARCLK.IS",
+    "peer_teaser": "Pay Dışında Sermaye Piyasası Aracı İşlemlerine İlişkin Bildirim (Faiz İçeren). XS2346972263 ISIN kodlu Yeşil Tahvilin Kupon Ödemesi"
+  }
+}

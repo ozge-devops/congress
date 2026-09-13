@@ -39,6 +39,11 @@ def test_health_brief_vision_and_404():
         assert payload["call"] in ("up", "down")
         assert "brief" in payload and payload["brief"]
         assert payload["mixers"]["gated"]["call"] in ("up", "down")
+        assert payload["hop"]["prior"]["hop_date"]
+        assert payload["hop"]["portfolio"] is False
+        hop_tbl = client.get("/v1/results/hop")
+        assert hop_tbl.status_code == 200
+        assert hop_tbl.json()["n_retrieved"] == 308
 
         t1 = client.get("/v1/brief", params={"date": "2025-05-27", "tier": "T1"})
         assert t1.status_code == 200

@@ -26,6 +26,7 @@ from vesta.models import (
     predict_proba,
     tfn_features,
 )
+from vesta.hop import load_m3, retrieve_prior_day, same_date_peer
 from vesta.tiers import MIXERS, TIER_SPECS, TOKEN_HELP, delivered_payload
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -61,6 +62,8 @@ class VestaEngine:
         self.majority = 1
         self.models: dict[str, Fitted] = {}
         self._events: pd.DataFrame | None = None
+        self._hop_dates: list[str] = []
+        self._hop_vecs: np.ndarray | None = None
         self.meta: dict = {}
 
     def load(self) -> None:
@@ -103,6 +106,7 @@ class VestaEngine:
         self.models["tfn"] = fit_fusion("tfn", tfn_features(h_t, h_v), y, self.seed)
         self.models["gated"] = fit_fusion("gated", gated_features(h_t, h_v), y, self.seed)
         self.models["mult"] = fit_fusion("mult", mult_features(X_txt, X_img), y, self.seed)
+        self._hop_dates, self._hop_vecs = load_m3(self.root / "data" / "vesta_public" / "kap_daily_embeddings_m3.npz")
 
         self.meta = {
             "n_total": len(samples),
@@ -262,6 +266,18 @@ class VestaEngine:
                 "compression": round(noise.compression, 4),
             },
             "event": event,
+            "hop": (
+                {
+                    "prior": retrieve_prior_day(date, self._hop_dates, self._hop_vecs),
+                    "peer": same_date_peer(self.events_frame(), date),
+                    "alpha": 1.0,
+                    "beta_fitted": False,
+                    "portfolio": False,
+                    "enters_mixer": False,
+                }
+                if tier in {"T3", "T10"} and not silent
+                else None
+            ),
             "realized": {
                 "y_direction_1d": int(sample.y_fwd),
                 "next_ret_1d": round(float(sample.next_ret), 6),
@@ -393,6 +409,7 @@ class VestaEngine:
             "kap_minilm": "kap_embed_benchmark.json",
             "learned_gmu": "learned_gmu.json",
             "study_pilot": "study_model_pilot.json",
+            "hop": "hop.json",
         }
         if name is None:
             pub = json.loads((folder / files["public_benchmark"]).read_text())

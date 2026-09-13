@@ -176,16 +176,27 @@ def test_learned_gmu_matches_json_and_paper():
     assert "Time-Budgeted Multimodal Agents" not in paper
     assert "Agentic RAG" not in paper
     assert "Word is [paper/vesta.docx]" not in readme
-    assert "templated analogue" in paper or "templated \\texttt{hist" in paper
+    assert "hist\\_analog" in paper or "hist_analog" in paper
     assert "one retrieval step over similar past days" not in paper
     assert "Dir.\\ (\\%)" in paper
     assert "54.9" in paper
     assert "4/8" in paper
     assert "0/2" in paper
     assert "1/2" in paper
-    assert "skip that loop" in paper
-    assert "not executed" in paper
+    assert "hop is executed" in paper
+    assert "skip that loop" not in paper
+    assert "not executed" not in paper
     assert "by construction" in paper
+    hop = _load("results/hop.json")
+    assert hop["executed"] is True
+    assert hop["portfolio"] is False
+    assert hop["beta_fitted"] is False
+    assert hop["n_retrieved"] == 308
+    assert abs(hop["mean_cosine"] - 0.89) < 0.005
+    assert abs(100.0 * hop["analog_hit_rate"] - 49.8) < 0.05
+    assert "0.89" in paper
+    assert "49.8" in paper
+    assert "305" in paper
     assert "no human annotators" in paper
     assert "not Tsai" in paper or "not MulT" in paper
     assert "fig:claw" not in paper
