@@ -197,7 +197,7 @@ def results_table(name: str):
     except KeyError:
         raise HTTPException(
             status_code=404,
-            detail="Unknown table. Use public_benchmark, agreement, vlm, vit, kap_m3, kap_minilm, learned_gmu, study_pilot, hop.",
+            detail="Unknown table. Use public_benchmark, agreement, vlm, vit, kap_m3, kap_minilm, learned_gmu, study_pilot, hop, second_window.",
         )
 
 

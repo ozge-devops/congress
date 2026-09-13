@@ -61,6 +61,10 @@ def test_health_brief_vision_and_404():
         assert results.status_code == 200
         assert "headline" in results.json()
         assert "learned_gmu" in results.json()["tables"]
+        assert "second_window" in results.json()["tables"]
+        win2 = client.get("/v1/results/second_window")
+        assert win2.status_code == 200
+        assert win2.json()["n_test"] == 248
         gmu = client.get("/v1/results/learned_gmu")
         assert gmu.status_code == 200
         assert abs(gmu.json()["acc"]["mean"] - 0.524675) < 1e-4

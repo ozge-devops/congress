@@ -410,6 +410,7 @@ class VestaEngine:
             "learned_gmu": "learned_gmu.json",
             "study_pilot": "study_model_pilot.json",
             "hop": "hop.json",
+            "second_window": "second_window.json",
         }
         if name is None:
             pub = json.loads((folder / files["public_benchmark"]).read_text())

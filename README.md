@@ -41,6 +41,7 @@ Then open `http://127.0.0.1:43187/` (console) or `/docs` (OpenAPI).
 | GET | `/v1/results/public_benchmark` | Leak, forward, tier, overlay JSON |
 | GET | `/v1/results/learned_gmu` | Learned Arevalo GMU ($W_v,W_t,W_z$) |
 | GET | `/v1/results/hop` | M3 day-level hop ($\alpha=1$, no portfolio) |
+| GET | `/v1/results/second_window` | 2023 chronological holdout on XU100 |
 | GET | `/v1/results/study_pilot` | Model dry-run on the sealed study gold |
 | GET | `/v1/results/vlm` | Zero-shot DePlot / MatCha JSON |
 | GET | `/v1/tickers` | Public panel tickers |
@@ -93,6 +94,7 @@ The JSON under `results/` is copied into the LaTeX tables. To regenerate:
 PYTHONPATH=src python experiments/run_public_benchmark.py   # leak, forward, tiers, overlay
 PYTHONPATH=src python experiments/run_learned_gmu.py        # learned Arevalo GMU
 PYTHONPATH=src python experiments/run_hop.py                # M3 day-level hop
+PYTHONPATH=src python experiments/run_second_window.py      # 2023 holdout on the same index
 PYTHONPATH=src python experiments/label_agreement.py
 PYTHONPATH=src python experiments/embed_kap.py              # MiniLM
 PYTHONPATH=src python experiments/embed_kap_m3.py           # public BGE-M3
@@ -114,6 +116,10 @@ On the public test window (27 May 2025 to 19 August 2026, 308 index days):
 - T1 covers 32.5% of days on seed 0. \(\mathrm{IN}_{\mathrm{new}}\) is
   60.3 / 82.1 / 93.6% on templated token bags.
 - Buy-and-hold Sharpe in that window is 1.69; every seed-0 overlay is lower.
+- A second chronological cut (train before 2023-01-01, test 2023, n=248)
+  is `results/second_window.json`. Mean fusion is 53.3±1.7 against majority
+  51.2. Seed-0 vision overlay Sharpe is 1.81 versus buy-and-hold 0.99.
+  That does not reverse the 2025-2026 bull table.
 
 DePlot / MatCha are zero-shot on all 308 test screenshots (no fine-tune).
 They need the optional CPU torch stack (`requirements-vlm.txt`) and are slow.
@@ -140,11 +146,36 @@ pdflatex vesta.tex && bibtex vesta && pdflatex vesta.tex && pdflatex vesta.tex
 bash paper/pack_comesyso.sh
 ```
 
+## Hugging Face Space
+
+`app.py` is a Gradio console on the same public engine (date, ticker, T1/T3/T10,
+mixer, hop, 40-bar chart). It is a demo, not a paper result.
+
+```bash
+pip install -r requirements.txt
+PYTHONPATH=src python app.py
+```
+
+Open `http://127.0.0.1:7865`. To publish a Space, export a Hugging Face
+**write** token and run:
+
+```bash
+export HF_TOKEN=hf_...
+python scripts/push_hf_space.py          # creates USER/vesta
+python scripts/push_hf_space.py --repo USER/vesta
+```
+
+Revoke the token after the upload. New Gradio Spaces on cpu-basic now need
+Hugging Face PRO. The public static viewer is
+[huggingface.co/spaces/ozgezelal/vesta](https://huggingface.co/spaces/ozgezelal/vesta)
+(locked example briefs; not a live mixer).
+
 ## What is still missing
 
 A three-annotator gold set, a 12-investor NASA-TLX study (`study/` has the
 protocol; `responses.csv` is a header only), full KAP disclosure-detail pages,
-and a GPU Pix2Struct/MatCha fine-tune. The forward table still has score-space mixers;
+and a GPU Pix2Struct/MatCha fine-tune. The 2023 holdout is in the paper; it is
+not a second exchange. The forward table still has score-space mixers;
 the learned-GMU row fits $W_v,W_t,W_z$ on the raw streams and does not beat
 score-space GMU. The public chart window is bars \(t-40,\ldots,t-1\); the
 tabular features and the vol diagnostic are at day \(t\). Human NASA-TLX

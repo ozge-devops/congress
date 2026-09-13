@@ -1,0 +1,15 @@
+data/cache/kap_bodies.jsonl
+data/cache/kap_disclosures.jsonl
+data/cache/vlm/
+data/cache/vit/
+data/cache/*_IS.csv
+data/vesta_public/events_10k.csv
+data/vesta_public/events_10k.parquet
+data/vesta_public/kap_daily_embeddings.npz
+paper/
+*.pdf
+.github/
+study/responses.csv
+__pycache__/
+.venv/
+.git/

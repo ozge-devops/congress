@@ -36,5 +36,8 @@ comesyso:
 api:
 	PYTHONPATH=src python3 -m vesta.api
 
+space:
+	PYTHONPATH=src python3 app.py
+
 paper: figures
 	cd paper && pdflatex -interaction=nonstopmode vesta.tex && bibtex vesta && pdflatex -interaction=nonstopmode vesta.tex && pdflatex -interaction=nonstopmode vesta.tex

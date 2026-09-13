@@ -5,6 +5,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{amsmath,amssymb}
 \usepackage{url}
 \usepackage{lmodern}
@@ -36,7 +37,7 @@ Retail investors sit between the textual density of the Public Disclosure Platfo
 
 FinMem layers trading-agent memory by information half-life~\cite{yu2024finmem}. VESTA scores a briefing whose clock is 1, 3 or 10 minutes: KAP list text and a 40-bar chart. The fusion rule does not change with the clock; only how many tokens are shown. T3 and T10 attach an M3 day-level hop; that analogue does not enter the mixer. Decision support is scored on next-day BIST direction, not on a realized-volatility flag that can be read off the same day's OHLCV table. Whenever a chart encoder is used, a numeric OHLCV baseline is reported beside it~\cite{jiang2023reimagining}. The public tables mix unimodal class scores with GMU~\cite{arevalo2017gmu}, tensor fusion~\cite{zadeh2017tfn} and a scalar gate, and they add one learned-GMU row that fits Arevalo's $W_v,W_t,W_z$ on the raw vectors. Actionability is a long/short overlay against buy-and-hold. The public chart is bars $t-40,\ldots,t-1$. We do not claim a human-load result: a 12-participant NASA-TLX protocol is specified in \texttt{study/}; responses are not collected.
 
-The contribution is four protocol facts, not a new mixer. (1)~T1, T3 and T10 change how many tokens are shown while the mixer stays fixed. (2)~A $2\sigma$ realized-vol flag on the same day's OHLCV is recovered at 100\% F1 by a closed-form rule, so the headline label is next-day direction. (3)~Tiers measure delivery (coverage, declared latency, tokens, length-normalized noise); they do not raise next-day accuracy. Action is a long/short overlay against buy-and-hold on one bull test window. (4)~Score-space mixers are not separable from score-space GMU on seed 0 (minimum McNemar $p=0.46$); learned GMU is not either ($p=0.29$). We do not name a winner~\cite{harvey2016and}. Those four facts are in the tables. The objects match three CoMeSySo areas: an econometric next-day index label, computational-intelligence mixers, and software whose delivered length depends on a declared time budget.
+The contribution is four protocol facts, not a new mixer. (1)~T1, T3 and T10 change how many tokens are shown while the mixer stays fixed. (2)~A $2\sigma$ realized-vol flag on the same day's OHLCV is recovered at 100\% F1 by a closed-form rule, so the headline label is next-day direction. (3)~Tiers measure delivery (coverage, declared latency, tokens, length-normalized noise); they do not raise next-day accuracy. Action is a long/short overlay against buy-and-hold on the 2025--2026 bull window; a 2023 holdout on the same index is in Table~\ref{tab:win2} and does not reverse that claim. (4)~Score-space mixers are not separable from score-space GMU on seed 0 (minimum McNemar $p=0.46$); learned GMU is not either ($p=0.29$). We do not name a winner~\cite{harvey2016and}. Those four facts are in the tables. The objects match three CoMeSySo areas: an econometric next-day index label, computational-intelligence mixers, and software whose delivered length depends on a declared time budget.
 
 \subsection{Related work}
 Financial NLP has moved from sentiment scoring~\cite{sohangir2018big} to domain LLMs such as FinGPT~\cite{yang2023fingpt}. Hallucination on prices remains a documented failure mode~\cite{kang2023deficiency}, so public text here is KAP list teasers, not free generation~\cite{lewis2020rag}. Tool-using agents~\cite{yao2023react} and FinMem~\cite{yu2024finmem} are the closest named relatives; this paper scores a briefing, not a trading agent. The public hop is M3 day-level cosine, not a portfolio retrieve-then-generate loop.
@@ -73,7 +74,7 @@ The text dataset is VESTA-Public: one row per ticker-day (37{,}046 events; 27 BI
 \label{tab:text}
 \centering
 \footnotesize
-\begin{tabular}{llp{6.4cm}l}
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{6.1cm}l@{}}
 \toprule
 Date & Ticker & KAP list teaser & KAP pol.\ \\
 \midrule
@@ -318,7 +319,7 @@ T10 briefing & 100.0 & 3.4 & 49.7 & 52 & 6.8\% & 93.6\% \\
 Table~\ref{tab:bt} asks whether acting on the output would have helped. In the May 2025 to August 2026 test window, BIST100 buy-and-hold returned $+56.3\%$ (Sharpe 1.69). Every seed-0 overlay we tried underperformed that long-only benchmark after 5\,bp costs. Vision-only (Sharpe 0.37) and the scalar gate (0.33) were positive but far below BH; GMU and tabular were negative. A bull-market holdout is a hard test for a long/short overlay~\cite{harvey2016and}.
 
 \begin{table}[t]
-\caption{Paper-trading overlay on seed-0 calls, one bull chronological window (27 May 2025 to 19 August 2026), 5\,bp costs. BH is long-only BIST100. Dir.\ is the fraction of days the signed position matches $y_{t+1}$; for buy-and-hold that equals the up-day prior. Long/short versus BH is a hard test on this window; there is no second market.}
+\caption{Paper-trading overlay on seed-0 calls, one bull chronological window (27 May 2025 to 19 August 2026), 5\,bp costs. BH is long-only BIST100. Dir.\ is the fraction of days the signed position matches $y_{t+1}$; for buy-and-hold that equals the up-day prior. Long/short versus BH is a hard test on this window. Table~\ref{tab:win2} is the earlier 2023 holdout on the same index.}
 \label{tab:bt}
 \centering
 \begin{tabular}{lcccc}
@@ -334,12 +335,36 @@ GMU overlay & 48.1 & $-0.74$ & $-21.8\%$ & $27.4\%$ \\
 \end{tabular}
 \end{table}
 
+\subsection{Earlier holdout (2023)}
+\label{sec:win2}
+Table~\ref{tab:win2} is a second chronological cut on the same index, not a second market. Models are trained on days strictly before 2 January 2023 and scored on 2023 ($n=248$; prior 51.2\%). Five-seed mean fusion accuracy is $53.3\pm1.7$ against majority 51.2. On seed 0 the vision overlay beats buy-and-hold (Sharpe 1.81 versus 0.99). That does not reverse Table~\ref{tab:bt}: we do not name a winner after two uncorrected windows~\cite{harvey2016and}.
+
+\begin{table}[t]
+\caption{Earlier holdout on XU100, 2 January 2023 to 29 December 2023 ($n=248$). Train is all sessions before 2023-01-01 ($n=1149$). Accuracy is mean $\pm$ $1.96$ se over five seeds. Overlay Sharpe and return are seed 0, 5\,bp costs; n/a where that mixer has no overlay row. Buy-and-hold on the same window: Sharpe $0.99$, $+34.7$\%.}
+\label{tab:win2}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lcccc}
+\toprule
+Configuration & Acc.\ (\%) & Macro-F1 (\%) & Sharpe & Total ret.\ \\
+\midrule
+Majority class & $51.2\pm0.0$ & $33.9\pm0.0$ & n/a & n/a \\
+Text-only (macro + KAP) & $50.4\pm1.3$ & $40.5\pm2.3$ & n/a & n/a \\
+Tabular OHLCV & $51.2\pm0.0$ & $34.6\pm0.0$ & $0.56$ & $+14.8\%$ \\
+Scalar gate (score-space) & $52.5\pm1.7$ & $50.4\pm1.2$ & $1.64$ & $+70.6\%$ \\
+Vision-only ($24\times24$ MLP) & $53.1\pm1.8$ & $50.6\pm2.9$ & $1.81$ & $+81.4\%$ \\
+Mean fusion & $53.3\pm1.7$ & $51.3\pm2.8$ & n/a & n/a \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Discussions}
-This paper is a protocol, not a mixer. The public path runs an M3 day-level hop ($\alpha=1$, no portfolio); the analogue hit rate is 49.8\% and the hop does not enter the mixer. Tiers change delivery, not next-day accuracy: T3 and T10 both score 49.7\% on seed 0 because extra tokens are templates. Five-seed accuracy sits next to the majority prior; we do not name a winner. The overlay is one bull window; it loses to buy-and-hold. Human NASA-TLX is unspecified ($n=0$). Fleiss $\kappa=0.50$ is three codebooks; there are no human annotators. Public text is KAP list teasers, not full KAP HTML.
+This paper is a protocol, not a mixer. The public path runs an M3 day-level hop ($\alpha=1$, no portfolio); the analogue hit rate is 49.8\% and the hop does not enter the mixer. Tiers change delivery, not next-day accuracy: T3 and T10 both score 49.7\% on seed 0 because extra tokens are templates. Five-seed accuracy sits next to the majority prior; we do not name a winner. The 2025-2026 bull overlay loses to buy-and-hold; the 2023 holdout does not reverse that claim. Human NASA-TLX is unspecified ($n=0$). Fleiss $\kappa=0.50$ is three codebooks; there are no human annotators. Public text is KAP list teasers, not full KAP HTML.
 
 Learned GMU does not beat score-space GMU ($p=0.29$). There is no score-space mixer that beats score-space GMU either (minimum $p=0.46$). The learned-GMU row is the control for fusing unimodal class scores. The public chart uses bars $t-40,\ldots,t-1$. Information noise and tier latencies are simulated. $\mathrm{IN}_{\mathrm{new}}$ rises by construction when T3/T10 add filler.
 
-Three items remain open. The 12-participant NASA-TLX study in \texttt{study/} has no responses, so human load and trust are unspecified. There is no human-annotator gold set; polarity is silver codebook output. Full disclosure-detail pages and a second market are absent. Those are the next measurements.
+Three items remain open. The 12-participant NASA-TLX study in \texttt{study/} has no responses, so human load and trust are unspecified. There is no human-annotator gold set; polarity is silver codebook output. Full disclosure-detail pages are absent. Those are the next measurements.
 
 \subsubsection{Disclosure of Interests.} The authors declare that they have no competing interests relevant to the content of this article. P.G.\ and H.B.\ are employed by Infina Software Development Inc., which operates a BIST retail platform; the public replication does not use proprietary KAP text.
 

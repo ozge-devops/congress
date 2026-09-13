@@ -18,6 +18,7 @@ Where the camera-ready claims in `paper/vesta.tex` are produced.
 | Number lock | `tests/test_paper_consistency.py` |
 | Stored `brief` == `text_polarity` | `experiments/refresh_briefs.py` |
 | M3 day-level hop ($\alpha=1$, no portfolio) | `results/hop.json` |
+| 2023 chronological holdout (same index) | `results/second_window.json` |
 | GitHub `ozge-devops/congress` `c03627c` | Older LNCS snapshot; current `main` is this PDF |
 
 Public KAP text is list teasers from kap.org.tr. Score-space mixers fuse

@@ -186,6 +186,66 @@ def test_learned_gmu_matches_json_and_paper():
     assert "hop is executed" in paper
     assert "skip that loop" not in paper
     assert "not executed" not in paper
+    assert "sec:win2" in paper
+    assert "tab:win2" in paper
+    assert "2023-01-02" in paper or "2 January 2023" in paper
+    assert "29 December 2023" in paper
+    assert "$n=248$" in paper
+    assert "$n=1149$" in paper
+    assert "$53.3\\pm1.7$" in paper
+    assert "$51.3\\pm2.8$" in paper
+    assert "$53.1\\pm1.8$" in paper
+    assert "$50.6\\pm2.9$" in paper
+    assert "$52.5\\pm1.7$" in paper
+    assert "$50.4\\pm1.2$" in paper
+    assert "$1.81$" in paper
+    assert "$+81.4\\%$" in paper
+    assert "$1.64$" in paper
+    assert "$+70.6\\%$" in paper
+    assert "$0.56$" in paper
+    assert "$+14.8\\%$" in paper
+    assert "$0.99$" in paper
+    assert "$+34.7$" in paper
+    assert "does not reverse" in paper
+    assert "there is no second market" not in paper
+    assert "second_window" in (ROOT / "src" / "vesta" / "engine.py").read_text()
+    space_app = (ROOT / "app.py").read_text()
+    assert "Human NASA-TLX responses are not claimed" in space_app
+    assert "huggingface.co/spaces/" not in space_app
+
+
+def test_second_window_json_matches_paper():
+    win = _load("results/second_window.json")
+    paper = (ROOT / "paper" / "vesta.tex").read_text()
+    assert win["test_start"] == "2023-01-02"
+    assert win["test_end"] == "2023-12-29"
+    assert win["n_test"] == 248
+    assert win["n_fit"] == 1149
+    assert abs(win["prior_up"] - 0.5121) < 5e-4
+    fwd = win["forward"]
+    assert abs(100.0 * fwd["majority"]["acc"]["mean"] - 51.2) < 0.05
+    assert abs(100.0 * fwd["majority"]["f1"]["mean"] - 33.9) < 0.05
+    assert abs(100.0 * fwd["text"]["acc"]["mean"] - 50.4) < 0.05
+    assert abs(100.0 * fwd["mean"]["acc"]["mean"] - 53.3) < 0.05
+    assert abs(100.0 * fwd["mean"]["f1"]["mean"] - 51.3) < 0.05
+    assert abs(100.0 * fwd["vision"]["acc"]["mean"] - 53.1) < 0.05
+    assert abs(100.0 * fwd["vision"]["f1"]["mean"] - 50.6) < 0.05
+    assert abs(100.0 * fwd["gated"]["acc"]["mean"] - 52.5) < 0.05
+    assert abs(100.0 * fwd["gated"]["f1"]["mean"] - 50.4) < 0.05
+    assert abs(100.0 * fwd["tabular"]["acc"]["mean"] - 51.2) < 0.05
+    ov = win["overlay_seed0"]
+    assert abs(ov["vision"]["sharpe"] - 1.81) < 0.01
+    assert abs(100.0 * ov["vision"]["total_net"] - 81.4) < 0.05
+    assert abs(ov["gated"]["sharpe"] - 1.64) < 0.01
+    assert abs(100.0 * ov["gated"]["total_net"] - 70.6) < 0.05
+    assert abs(ov["tabular"]["sharpe"] - 0.56) < 0.01
+    assert abs(100.0 * ov["tabular"]["total_net"] - 14.8) < 0.05
+    assert abs(ov["vision"]["sharpe_bh"] - 0.99) < 0.01
+    assert abs(100.0 * ov["vision"]["total_bh"] - 34.7) < 0.05
+    assert "n/a" in paper
+    # Majority overlay cells are n/a; BH numbers live in the caption only.
+    maj = [ln for ln in paper.splitlines() if ln.startswith("Majority class")]
+    assert maj and "n/a" in maj[0]
     assert "by construction" in paper
     hop = _load("results/hop.json")
     assert hop["executed"] is True
