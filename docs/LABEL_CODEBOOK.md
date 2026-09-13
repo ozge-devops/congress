@@ -10,7 +10,7 @@ The labels are deterministic functions of public OHLCV and KAP list text.
 | `events.parquet` / `events.csv` | Full event table (37,046 rows) including 40-bar OHLC windows |
 | `events_10k.parquet` / `events_10k.csv` | Paper-sized slice: every index day + largest constituent moves |
 | `label_stats.json` / `label_stats_10k.json` | Class counts, KAP linkage, date range |
-| `kap_inventory.json` | 39,890 public KAP list filings (27 tickers) |
+| `kap_inventory.json` | 39,890 public KAP list filings (27 tickers; scrape 2 Jan 2018 to 27 Aug 2026) |
 | `human_annotation_sample.csv` | 250 stratified rows; annotator columns are codebook B (`annotator_id=codebook_b`) |
 
 Index series: every XU100 session after the lookback. The public chart is the
@@ -40,6 +40,8 @@ Source: `POST https://www.kap.org.tr/tr/api/disclosure/members/byCriteria`
 
 These are list teasers from kap.org.tr. Lexicon hits on `kap_text` / `kap_body` feed
 `kap_polarity` and the mixed `text_polarity`; they do not enter `y_direction_*`.
+The `brief` string is rebuilt from those columns (`experiments/refresh_briefs.py`);
+the polarity token in `brief` must match `text_polarity`.
 
 ## KAP-only silver sentiment (original text axis)
 
@@ -50,7 +52,7 @@ or future return. Subject priors: dividend / buyback / bonus issue tilt bullish;
 probe / fine / lawsuit tilt bearish. Thresholds: `≥ 1` bullish, `≤ -1` bearish.
 
 Full-panel counts: bullish 7,172; bearish 3,742; neutral 26,132. Most KAP days
-are routine filings, so neutral is the honest majority. HTML bodies are cached
+are routine filings, so neutral is the majority class. HTML bodies are cached
 for 25,734 filings; 15,212 event rows have a stripped `kap_body`.
 
 ## Primary labels (do not leak from the chart)

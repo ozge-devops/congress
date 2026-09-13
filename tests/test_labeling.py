@@ -15,7 +15,7 @@ from vesta.labeling import (
     text_polarity,
 )
 from vesta.metrics import cohen_kappa
-from vesta.models import mult_features
+from vesta.models import fit_learned_gmu, mult_features
 
 
 def _flat_ohlc(n=40, start=100.0, drift=0.0, shock=0.0):
@@ -124,6 +124,23 @@ def test_leak_flag_closed_form():
     assert leak_vol_flag(mu + 0.5 * sd, hist) == 0
 
 
+def test_learned_gmu_fits_and_scores_separable_streams():
+    rng = np.random.default_rng(1)
+    n = 80
+    y = (rng.random(n) > 0.5).astype(int)
+    x_t = 0.1 * rng.normal(size=(n, 16))
+    x_v = 0.1 * rng.normal(size=(n, 24))
+    x_t[:, 0] = 4.0 * (2 * y - 1)
+    model = fit_learned_gmu(x_t, x_v, y, seed=0, steps=120)
+    p = model.predict_proba(x_t, x_v)
+    assert p.shape == (n,)
+    acc = float(((p >= 0.5).astype(int) == y).mean())
+    assert acc >= 0.75
+    assert model.W_v.shape[0] == 24
+    assert model.W_t.shape[0] == 16
+    assert model.W_z.shape == (40, 1)
+
+
 if __name__ == "__main__":
     tests = [
         test_breakout_uses_prior_high_not_future,
@@ -141,6 +158,7 @@ if __name__ == "__main__":
         test_chart_b_not_identical_to_a_on_10bar_breakout,
         test_ohlc_window_excludes_day_t,
         test_leak_flag_closed_form,
+        test_learned_gmu_fits_and_scores_separable_streams,
     ]
     for fn in tests:
         fn()

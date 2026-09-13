@@ -1,7 +1,8 @@
 # User-study materials
 
-This folder is the executable protocol for §6 of `paper/vesta.tex`.
-`responses.csv` is a header only; no participant answers have been collected.
+This folder is the executable human protocol in Methods of `paper/vesta.tex`
+(label `sec:user`). `responses.csv` is a header only; no participant answers
+have been collected. This manuscript does not claim NASA-TLX scores.
 
 ## Design
 

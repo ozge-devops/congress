@@ -8,7 +8,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import yfinance as yf
 
 
 LOOKBACK = 40
@@ -44,6 +43,8 @@ def download_public_market(cache_dir: Path) -> dict[str, pd.DataFrame]:
         if csv_path.exists():
             frames[name] = pd.read_csv(csv_path, index_col=0, parse_dates=True)
             continue
+        import yfinance as yf
+
         raw = yf.download(ticker, start="2018-01-01", progress=False, auto_adjust=True)
         if raw is None or raw.empty:
             raise RuntimeError(f"Failed to download {ticker}")

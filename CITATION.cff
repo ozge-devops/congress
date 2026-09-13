@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-title: "VESTA: Time-Budgeted Multimodal Agents for Retail Financial Decision Support"
-message: "Please cite the manuscript in paper/ until a venue version exists."
+title: "VESTA: Evaluating Time-Budgeted Multimodal Briefing for BIST Retail Users"
+message: "Please cite the manuscript in paper/vesta.pdf."
 type: software
 authors:
   - family-names: Gunes
@@ -17,4 +17,22 @@ authors:
     affiliation: "Infina Software Development Inc."
 url: "https://github.com/ozge-devops/congress"
 repository-code: "https://github.com/ozge-devops/congress"
-date-released: "2026-08-28"
+keywords:
+  - Econometrics
+  - Computational intelligence
+  - Decision support
+  - Multimodal fusion
+  - Borsa Istanbul
+date-released: "2026-09-13"
+preferred-citation:
+  type: conference-paper
+  title: "VESTA: Evaluating Time-Budgeted Multimodal Briefing for BIST Retail Users"
+  authors:
+    - family-names: Gunes
+      given-names: Peri
+    - family-names: Kucuk
+      given-names: Ozge Zelal
+    - family-names: Benli
+      given-names: Harun
+  year: 2026
+  collection-title: "CoMeSySo 2026 (Springer LNNS, submitted)"

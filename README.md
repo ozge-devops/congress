@@ -1,20 +1,61 @@
 # VESTA
 
-Time-budgeted multimodal briefing for BIST retail users.
+Evaluation protocol for time-budgeted multimodal briefing for BIST retail users.
 
 Peri Gunes (Infina Software), Ozge Zelal Kucuk (Istanbul Aydin University),
 Harun Benli (Infina Software).
 
-Camera-ready PDF:[paper/vesta.pdf](paper/vesta.pdf).
-Source: [paper/vesta.tex](paper/vesta.tex). Word is [paper/vesta.docx](paper/vesta.docx)
-if you cannot open LaTeX; the LNCS page breaks are only in the PDF.
+CoMeSySo 2026 manuscript and replication package.
+Public repository: [github.com/ozge-devops/congress](https://github.com/ozge-devops/congress).
+Commit `c03627c` is an earlier LNCS draft (title *Time-Budgeted Multimodal Agents*,
+Agentic RAG keywords, merged McNemar `p>0.46`). Current `main` matches this PDF.
 
-VESTA has three layers. DataClaw0 retrieves portfolio-conditioned KAP list
-text. VisualClaw reads a 40-bar candlestick (bars \(t-40,\ldots,t-1\)) as a
-\(24\times24\) image. A standard sigmoid mixer combines the two streams and is
-compared with GMU, tensor fusion, a MulT-style block, mean, and concat. The
-Temporal Orchestration Layer spends a 1-, 3-, or 10-minute budget (T1 / T3 /
-T10) by changing chain depth; the mixer stays fixed.
+Camera-ready PDF: [paper/vesta.pdf](paper/vesta.pdf).
+Source: [paper/vesta.tex](paper/vesta.tex).
+Word (optional): `bash paper/export_docx.sh` (pandoc).
+
+## HTTP API
+
+A FastAPI service over the public corpus: next-day XU100 call, T1/T3/T10
+payload, VisualClaw PNG, KAP event lookup, and the paper JSON tables.
+
+```bash
+pip install -r requirements.txt
+PYTHONPATH=src python -m vesta.api
+```
+
+Then open `http://127.0.0.1:43187/` (console) or `/docs` (OpenAPI).
+
+| Method | Path | What it does |
+| --- | --- | --- |
+| GET | `/health` | Ready flag and panel dates |
+| GET | `/v1/meta` | Mixers, tiers, tickers |
+| GET | `/v1/dates?split=test` | Session calendar |
+| GET | `/v1/brief?date=2025-05-27&tier=T3&mixer=gated&ticker=THYAO.IS` | Briefing |
+| POST | `/v1/brief` | Same, JSON body |
+| GET | `/v1/predict?date=2025-05-27` | Direction only |
+| GET | `/v1/mixers?date=2025-05-27` | All mixer scores |
+| GET | `/v1/vision?date=2025-05-27&kind=screenshot` | PNG (`screenshot`, `tensor`, `tokens`) |
+| GET | `/v1/events?ticker=THYAO.IS` | Silver-labeled KAP rows |
+| GET | `/v1/results` | Paper table index |
+| GET | `/v1/results/public_benchmark` | Leak, forward, tier, overlay JSON |
+| GET | `/v1/results/learned_gmu` | Learned Arevalo GMU ($W_v,W_t,W_z$) |
+| GET | `/v1/results/study_pilot` | Model dry-run on the sealed study gold |
+| GET | `/v1/results/vlm` | Zero-shot DePlot / MatCha JSON |
+| GET | `/v1/tickers` | Public panel tickers |
+
+T1 stays silent when `|g-0.5| ≤ 0.18`. Mixers are seed-0 sklearn fits on the
+chronological train+val split. GitHub Actions runs `tests/test_api.py`.
+
+VESTA has three layers. The designed DataClaw0 loop is portfolio-conditioned
+KAP retrieval; the public tables and HTTP console use a 16-d macro+KAP bag
+and templated tokens (T3/T10 insert `hist_analog`, they do not retrieve a
+neighbour). VisualClaw reads a 40-bar candlestick (bars \(t-40,\ldots,t-1\))
+as a \(24\times24\) image. Score-space mixers combine the two streams
+(GMU, tensor fusion, 1-layer attention, mean, concat). Learned GMU is a paper
+ablation (`GET /v1/results/learned_gmu`). The Temporal Orchestration Layer
+spends a 1-, 3- or 10-minute budget (T1 / T3 / T10) by changing how much
+text is shown; the mixer stays fixed.
 
 The headline task is next-day BIST100 direction. A \(2\sigma\) realized-volatility
 flag on the tabular vector at day \(t\) is a diagnostic: a closed-form rule
@@ -31,8 +72,7 @@ Bibliography check: [docs/BIBLIOGRAPHY_AUDIT.md](docs/BIBLIOGRAPHY_AUDIT.md).
 `data/vesta_public/` is the silver-labeled panel: 37,046 events, 27 BIST names
 plus XU100, 24 May 2018 to 19 August 2026. Splits are chronological by calendar
 date (70/15/15). 19,645 rows have a same-day KAP list teaser; 15,212 have a
-cached HTML body from kap.org.tr. Public BGE-M3 in Table 2 uses the same list
-text.
+cached HTML body from kap.org.tr. Public BGE-M3 in the forward table uses the same list text.
 
 Rebuild from Yahoo + KAP if you need to:
 
@@ -45,10 +85,11 @@ PYTHONPATH=src python tests/test_labeling.py
 
 ## Tables in the paper
 
-The JSON under `results/` is what we copied into the LaTeX tables. To regenerate:
+The JSON under `results/` is copied into the LaTeX tables. To regenerate:
 
 ```bash
-PYTHONPATH=src python experiments/run_public_benchmark.py   # Tables 1-4
+PYTHONPATH=src python experiments/run_public_benchmark.py   # leak, forward, tiers, overlay
+PYTHONPATH=src python experiments/run_learned_gmu.py        # learned Arevalo GMU
 PYTHONPATH=src python experiments/label_agreement.py
 PYTHONPATH=src python experiments/embed_kap.py              # MiniLM
 PYTHONPATH=src python experiments/embed_kap_m3.py           # public BGE-M3
@@ -58,39 +99,52 @@ PYTHONPATH=src python experiments/make_figures.py
 PYTHONPATH=src python tests/test_paper_consistency.py
 ```
 
-On the public test window(27 May 2025 to 19 August 2026, 308 index days):
+On the public test window (27 May 2025 to 19 August 2026, 308 index days):
 
--No mixer beats GMU on next-day direction (McNemar \(p > 0.46\) on seed 0).
-  Mean fusion is the point estimate: 53.0% accuracy / 52.4% macro-F1.
--Proxy accuracy vs next-day direction: macro flags 54.9%, KAP polarity 49.7%,
+- No score-space mixer beats score-space GMU on next-day direction
+  (minimum McNemar \(p=0.46\) on seed 0). Mean fusion is the five-seed
+  point estimate: 53.0% accuracy / 52.4% macro-F1. Learned Arevalo GMU
+  is \(52.5\pm0.5\) / \(40.3\pm4.4\) (seed-0 McNemar \(p=0.29\)).
+- Proxy accuracy vs next-day direction: macro flags 54.9%, KAP polarity 49.7%,
   vision \(52.9\pm2.3\)%, tabular \(50.6\pm0.0\)%. Codebook Fleiss \(\kappa=0.50\)
   on the 10k slice; chart A/B Cohen \(\kappa=0.52\).
--T1 covers 32.5% of days on seed 0. \(\mathrm{IN}_{\mathrm{new}}\) is 60-94%
-  on templated token bags.
--Buy-and-hold Sharpe in that window is 1.69; every seed-0 overlay is lower.
+- T1 covers 32.5% of days on seed 0. \(\mathrm{IN}_{\mathrm{new}}\) is
+  60.3 / 82.1 / 93.6% on templated token bags.
+- Buy-and-hold Sharpe in that window is 1.69; every seed-0 overlay is lower.
 
 DePlot / MatCha are zero-shot on all 308 test screenshots (no fine-tune).
 They need the optional CPU torch stack (`requirements-vlm.txt`) and are slow.
 
 Python 3.10 is enough for the sklearn tables. First run downloads XU100, USDTRY
-and gold into `data/cache/`;after that it stays offline.
+and gold into `data/cache/`; after that it stays offline.
 
-## Paper
+## Paper (CoMeSySo 2026)
+
+The camera-ready PDF is Springer LNNS using `llncs.cls`. The body follows the
+CoMeSySo CFP: Introduction, Methods, Results, Discussions. Track fit is
+Econometrics, Computational Intelligence, and Software Engineering in
+Intelligent Systems. Submission deadline (extended): 25 September 2026.
 
 ```bash
 cd paper
-pdflatex vesta.tex && bibtex vesta && pdflatex vesta.tex&&pdflatex vesta.tex
+pdflatex vesta.tex && bibtex vesta && pdflatex vesta.tex && pdflatex vesta.tex
 ```
 
-`llncs.cls` in that folder is Springer LNCS 2.26.For Word:`bash paper/export_docx.sh`
-(needs pandoc).
+`llncs.cls` is Springer LNCS/LNNS 2.26. For Word: `bash paper/export_docx.sh`
+(needs pandoc). For the OpenPublish ZIP (tex + figures + PDF):
+
+```bash
+bash paper/pack_comesyso.sh
+```
 
 ## What is still missing
 
 A three-annotator gold set, a 12-investor NASA-TLX study (`study/` has the
-protocol;`responses.csv` is a header only), full KAP disclosure-detail pages,
-and a GPU Pix2Struct/MatCha fine-tune.Table 2 mixers fuse unimodal scores;
-learned GMU weights $W_v,W_t,W_z$ are unused.The public chart window is bars \(t-40,\ldots,t-1\); the
-tabular features and the vol diagnostic are at day \(t\).
+protocol; `responses.csv` is a header only), full KAP disclosure-detail pages,
+and a GPU Pix2Struct/MatCha fine-tune. The forward table still has score-space mixers;
+the learned-GMU row fits $W_v,W_t,W_z$ on the raw streams and does not beat
+score-space GMU. The public chart window is bars \(t-40,\ldots,t-1\); the
+tabular features and the vol diagnostic are at day \(t\). Human NASA-TLX
+responses are not claimed.
 
-Questions: pgunes@infina.com.tr, hbenli@infina.com.tr , ozelalkucuk@stu.aydin.edu.tr
+Questions: pgunes@infina.com.tr, hbenli@infina.com.tr, ozelalkucuk@stu.aydin.edu.tr

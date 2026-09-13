@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIG = ROOT / "paper" / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 R = json.loads((ROOT / "results" / "public_benchmark.json").read_text())
+LG = json.loads((ROOT / "results" / "learned_gmu.json").read_text())
 
 plt.rcParams.update({
     "font.family": "serif",
@@ -40,11 +41,11 @@ def fig_architecture():
         ax.add_patch(p)
         ax.text(x + w / 2, y + h / 2, text, ha="center", va="center", fontsize=8, zorder=3)
 
-    box(0.4, 4.65, 5.2, 1.15, "KAP list teasers\n+ portfolio", "#dbeafe")
+    box(0.4, 4.65, 5.2, 1.15, "KAP list teasers\n16-d bag", "#dbeafe")
     box(6.4, 4.65, 5.2, 1.15, "40 OHLC bars\n(image + numbers)", "#fce7f3")
-    box(0.4, 3.05, 5.2, 1.15, "DataClaw0\nretrieve, score, brief", "#93c5fd")
+    box(0.4, 3.05, 5.2, 1.15, "DataClaw0\nmacro + KAP features", "#93c5fd")
     box(6.4, 3.05, 5.2, 1.15, "VisualClaw  |  Tabular\n24x24 + 3x3 patches", "#f9a8d4")
-    box(3.4, 1.5, 5.2, 1.1, "Fusion (standard mixer)\nGMU / TFN / gate / mean", "#e5e7eb")
+    box(3.4, 1.5, 5.2, 1.1, "Fusion\nGMU / TFN / gate / mean", "#e5e7eb")
     box(1.4, 0.15, 9.2, 1.0, "T1 flash   |   T3 context   |   T10 briefing\n1 / 3 / 10 min budget", "#fde68a")
 
     ax.annotate("", xy=(3.0, 4.2), xytext=(3.0, 4.65), arrowprops=arr)
@@ -85,20 +86,24 @@ def fig_leakage():
 
 
 def fig_forward():
-    order = ["mean", "tfn", "vision", "gated", "concat", "gmu", "mult", "text", "tabular", "majority"]
+    order = ["mean", "tfn", "vision", "gated", "concat", "gmu", "mult", "text", "tabular", "learned", "majority"]
     pretty = {
         "majority": "Majority",
         "text": "Text (macro+KAP)",
         "tabular": "Tabular OHLCV",
         "vision": "Vision-only",
         "mean": "Mean fusion",
-        "gmu": "GMU",
+        "gmu": "GMU (score)",
         "tfn": "TFN",
-        "mult": "MulT-style",
+        "mult": "1-layer attn",
         "gated": "Scalar gate",
         "concat": "Concat",
+        "learned": "Learned GMU",
     }
-    f1 = [100.0 * R["forward"][k]["f1"]["mean"] for k in order]
+    f1 = [
+        100.0 * (LG["f1"]["mean"] if k == "learned" else R["forward"][k]["f1"]["mean"])
+        for k in order
+    ]
     colors = ["#9ca3af" if k in {"majority", "text", "tabular", "vision"} else "#1d4ed8" for k in order]
     colors[-1] = "#0f766e"
     fig, ax = plt.subplots(figsize=(7.1, 3.3))
@@ -147,7 +152,7 @@ def fig_noise_and_tiers():
 
 
 def fig_dataclw0_loop():
-    """Retrieve-score loop for DataClaw0; a second hop only on T3/T10."""
+    """Designed DataClaw0 retrieve-score loop (public T3/T10 uses a template token)."""
     fig, ax = plt.subplots(figsize=(5.4, 3.4))
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 8.2)
@@ -173,7 +178,6 @@ def fig_dataclw0_loop():
     ax.annotate("", xy=(5.0, 3.3), xytext=(5.0, 3.85), arrowprops=arr)
     ax.annotate("", xy=(5.0, 1.3), xytext=(5.0, 2.35), arrowprops=arr)
 
-    # T3/T10 hop returns to retrieve/score.
     ax.annotate(
         "",
         xy=(8.55, 5.82),
@@ -191,8 +195,23 @@ def fig_dataclw0_loop():
     plt.close()
 
 
+def _save_panel(path_stem: str, draw, *, figsize, framed: bool = False):
+    fig, ax = plt.subplots(figsize=figsize)
+    draw(ax)
+    if framed:
+        ax.set_xticks([])
+        ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_linewidth(0.6)
+    else:
+        ax.axis("off")
+    fig.savefig(FIG / f"{path_stem}.pdf", bbox_inches="tight", pad_inches=0.03)
+    fig.savefig(FIG / f"{path_stem}.png", bbox_inches="tight", pad_inches=0.03)
+    plt.close()
+
+
 def fig_visualclaw():
-    """Example XU100 window: screenshot, 24×24 tensor, 3×3 patch tokens."""
+    """Example XU100 window: screenshot, 24x24 tensor, 3x3 patch tokens."""
     import csv
     import sys
 
@@ -205,7 +224,6 @@ def fig_visualclaw():
             dates.append(row["Date"][:10])
             ohlc.append([float(row[k]) for k in ("open", "high", "low", "close")])
     ohlc = np.asarray(ohlc, dtype=np.float32)
-    # Public chart is bars t-40 to t-1; pick the first test-window close (27 May 2025).
     try:
         t = dates.index("2025-05-27")
     except ValueError:
@@ -214,24 +232,43 @@ def fig_visualclaw():
     shot = render_screenshot(win, title=f"XU100  {dates[t - 40]} to {dates[t - 1]}")
     tiny = render_candles(win, size=24)
 
-    fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.55))
-    axes[0].imshow(np.asarray(shot))
-    axes[0].set_title("(a) RGB screenshot (DePlot / MatCha)")
+    def draw_shot(ax):
+        ax.imshow(np.asarray(shot))
+
+    def draw_mlp(ax):
+        ax.imshow(tiny, cmap="gray", vmin=0, vmax=1, interpolation="nearest")
+
+    def draw_tokens(ax):
+        ax.imshow(tiny, cmap="gray", vmin=0, vmax=1, interpolation="nearest")
+        for k in (8, 16):
+            ax.axhline(k - 0.5, color="#dc2626", lw=0.7)
+            ax.axvline(k - 0.5, color="#dc2626", lw=0.7)
+
+    _save_panel("visualclaw_a", draw_shot, figsize=(4.6, 2.55))
+    _save_panel("visualclaw_b", draw_mlp, figsize=(2.15, 2.15), framed=True)
+    _save_panel("visualclaw_c", draw_tokens, figsize=(2.15, 2.15), framed=True)
+
+    fig, axes = plt.subplots(
+        1,
+        3,
+        figsize=(7.2, 3.05),
+        gridspec_kw={"width_ratios": [1.7, 1.0, 1.0]},
+    )
+    title_kw = dict(fontsize=8, pad=5, linespacing=1.2)
+    draw_shot(axes[0])
+    axes[0].set_title("(a) RGB screenshot\n(DePlot / MatCha)", **title_kw)
     axes[0].axis("off")
 
-    axes[1].imshow(tiny, cmap="gray", vmin=0, vmax=1, interpolation="nearest")
-    axes[1].set_title("(b) 24×24 MLP tensor")
+    draw_mlp(axes[1])
+    axes[1].set_title(r"(b) $24\times 24$ MLP tensor", **title_kw)
     axes[1].set_xticks([])
     axes[1].set_yticks([])
 
-    axes[2].imshow(tiny, cmap="gray", vmin=0, vmax=1, interpolation="nearest")
-    for k in (8, 16):
-        axes[2].axhline(k - 0.5, color="#dc2626", lw=0.7)
-        axes[2].axvline(k - 0.5, color="#dc2626", lw=0.7)
-    axes[2].set_title("(c) Nine 8×8 tokens (MulT)")
+    draw_tokens(axes[2])
+    axes[2].set_title(r"(c) Nine $8\times 8$ tokens" + "\n(1-layer attn)", **title_kw)
     axes[2].set_xticks([])
     axes[2].set_yticks([])
-    fig.tight_layout()
+    fig.tight_layout(w_pad=1.2)
     fig.savefig(FIG / "visualclaw.pdf")
     fig.savefig(FIG / "visualclaw.png")
     plt.close()

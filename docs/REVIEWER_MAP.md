@@ -4,7 +4,8 @@ Where the camera-ready claims in `paper/vesta.tex` are produced.
 
 | Claim | Source |
 |-------|--------|
-| Tables 1-4, McNemar, tiers, overlay | `results/public_benchmark.json` |
+| Leak, forward, McNemar, tiers, overlay | `results/public_benchmark.json` |
+| Learned Arevalo GMU ($W_v,W_t,W_z$) | `results/learned_gmu.json` |
 | MiniLM KAP probe | `results/kap_embed_benchmark.json` |
 | Public BGE-M3 KAP probe | `results/kap_m3_benchmark.json` |
 | Frozen ViT-B/16 | `results/vit_baseline.json` |
@@ -15,5 +16,13 @@ Where the camera-ready claims in `paper/vesta.tex` are produced.
 | NASA-TLX protocol, empty responses | `study/` |
 | Model dry-run on sealed gold | `results/study_model_pilot.json` |
 | Number lock | `tests/test_paper_consistency.py` |
+| Stored `brief` == `text_polarity` | `experiments/refresh_briefs.py` |
+| GitHub `ozge-devops/congress` `c03627c` | Older LNCS snapshot; current `main` is this PDF |
 
-Public KAP text is list teasers from kap.org.tr. Mixers fuse unimodal class scores. The chart window is bars t-40 to t-1.
+Public KAP text is list teasers from kap.org.tr. Score-space mixers fuse
+unimodal class scores; `results/learned_gmu.json` fits Arevalo's maps on the
+raw streams. The public path does not run the designed M3 portfolio loop
+(specified, not executed; no `fig:claw` / `eq:rel` in the camera-ready).
+T3/T10 insert templated tokens; `IN_new` rises by construction. The 1-layer
+attention row is not Tsai MulT. Fleiss is three codebooks; there are no
+human annotators. The chart window is bars t-40 to t-1.

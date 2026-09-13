@@ -2,7 +2,8 @@
 
 Rule applied to every entry: DOI or arXiv id; official venue page (ACL Anthology, PMLR, NeurIPS proceedings, OpenReview, Springer, ACM, Wiley); full author list, no “et al.”; published version preferred over preprint; unverifiable entries dropped.
 
-Checked 27 August 2026.
+Checked 27 August 2026. Camera-ready `vesta.bib` keeps only keys cited in `vesta.tex`.
+Unused-but-audited keys (FinAgent, BloombergGPT, ChartLlama, Vaswani, AdamW, InfoNCE, Distill) stay in this table and are not in the submitted `.bib`.
 
 | Key | Official source | Notes |
 |-----|-----------------|-------|
@@ -27,7 +28,7 @@ Checked 27 August 2026.
 | cohen1960kappa | EPM 20(1):37-46. doi:10.1177/001316446002000104 | Unchanged in role (annotator agreement). |
 | dietterich1998approx | Neural Computation 10(7):1895-1923. doi:10.1162/089976698300017197 | McNemar / 5×2 cv. Used because we compare classifiers. |
 | harvey2016and | RFS 29(1):5-68. doi:10.1093/rfs/hhv059 | Multiple-testing caution for the backtest. |
-| yu2024finmem | AAAI Symposium Series 3(1):595-597 (2024). doi:10.1609/aaaiss.v3i1.31290 | Nine authors as in the AAAI record. A 2025 IEEE TBD extension exists (11(6):3443-3459); we cite the symposium version used to locate the layered-memory gap. |
+| yu2024finmem | AAAI Symposium Series 3(1):595-597 (2024). doi:10.1609/aaaiss.v3i1.31290 | Nine authors as in the AAAI record. A 2025 IEEE TBD extension exists (11(6):3443-3459); this paper cites the symposium version. |
 | zhang2024finagent | KDD 2024, pages 4314-4325. doi:10.1145/3637528.3671801 | **Published** KDD version, not the arXiv stub. Thirteen authors, no “et al.”. |
 | jiang2023reimagining | Journal of Finance 78(6):3193-3249. doi:10.1111/jofi.13268 | E3. Cited only together with a tabular OHLCV baseline. |
 | yang2023fingpt | arXiv:2306.06031 | No archival version found. Three authors. |

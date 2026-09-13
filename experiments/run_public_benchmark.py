@@ -25,59 +25,11 @@ from vesta.models import (  # noqa: E402
     predict_proba,
     tfn_features,
 )
+from vesta.tiers import TIER_SPECS, delivered_payload  # noqa: E402
 
 
 SEEDS = [0, 1, 2, 3, 4]
 COST_BPS = 5.0 / 10000.0
-
-TIER_SPECS = {
-    "T1": {
-        "max_tokens": 48,
-        "gate_tau": 0.18,
-        "latency_s": 0.9,
-        "template": ["session_ohlc", "bist100_level", "vol_spike", "price_shock"],
-    },
-    "T3": {
-        "max_tokens": 140,
-        "gate_tau": 0.0,
-        "latency_s": 2.1,
-        "template": [
-            "session_ohlc",
-            "bist100_level",
-            "vol_spike",
-            "price_shock",
-            "usdtry_up",
-            "usdtry_down",
-            "gold_up",
-            "gold_down",
-            "hist_analog",
-            "sector_note",
-        ],
-    },
-    "T10": {
-        "max_tokens": 420,
-        "gate_tau": 0.0,
-        "latency_s": 3.4,
-        "template": [
-            "session_ohlc",
-            "bist100_level",
-            "vol_spike",
-            "price_shock",
-            "usdtry_up",
-            "usdtry_down",
-            "gold_up",
-            "gold_down",
-            "hist_analog",
-            "sector_note",
-            "macro_correlator",
-            "hedge_sketch",
-            "disclaimer",
-            "kap_digest",
-        ],
-    },
-}
-
-FILLER = [f"filler_{i}" for i in range(80)]
 
 
 def stack_features(samples, image_size: int = 24):
@@ -89,27 +41,6 @@ def stack_features(samples, image_size: int = 24):
     y_leak = np.array([s.y_leak for s in samples], dtype=int)
     rets = np.array([s.next_ret for s in samples], dtype=float)
     return tabular, text, images, y_fwd, y_fwd5, y_leak, rets
-
-
-def delivered_payload(tier: str, relevant: set[str], text_vec: np.ndarray) -> list[str]:
-    spec = TIER_SPECS[tier]
-    live = []
-    flags = {
-        "usdtry_up": text_vec[0] > 0.5,
-        "usdtry_down": text_vec[1] > 0.5,
-        "gold_up": text_vec[2] > 0.5,
-        "gold_down": text_vec[3] > 0.5,
-        "vol_spike": text_vec[4] > 0.5,
-        "price_shock": text_vec[5] > 0.5,
-    }
-    for tok in spec["template"]:
-        if tok in flags and not flags[tok]:
-            continue
-        live.append(tok)
-    # Pad to the budgeted length with filler tokens.
-    while len(live) < spec["max_tokens"] // 8:
-        live.append(FILLER[len(live) % len(FILLER)])
-    return live[: spec["max_tokens"]]
 
 
 def evaluate_split(name, y_true, y_pred) -> dict:

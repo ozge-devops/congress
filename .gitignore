@@ -15,4 +15,7 @@ data/cache/vlm/*.png
 *.bak
 VESTA-camera-ready.pdf
 VESTA.docx
+paper/vesta.docx
+paper/comesyso-vesta.zip
 data/cache/vlm/matcha_smoke_captions.json
+assets/
