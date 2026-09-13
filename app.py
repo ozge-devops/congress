@@ -16,9 +16,6 @@ from PIL import Image
 from vesta.engine import VestaEngine
 from vesta.tiers import MIXERS, TIER_SPECS
 
-# Paper lock: this demo does not invent a human study.
-NASA_LINE = "Human NASA-TLX responses are not claimed"
-
 _ENGINE: VestaEngine | None = None
 _LOAD_ERROR: str | None = None
 
@@ -131,7 +128,7 @@ def run_brief(date: str, ticker: str, tier: str, mixer: str):
         f"split {payload.get('split')}   gate g={payload.get('gate_g')} keeps {payload.get('gate_keeps')}",
         f"call_scope={payload.get('call_scope')}   brief_scope={payload.get('brief_scope')}",
         f"chart cue: {payload.get('chart_signal')}   polarity: {payload.get('text_polarity')}",
-        f"declared latency {payload.get('declared_latency_s')} s   {NASA_LINE}.",
+        f"declared latency {payload.get('declared_latency_s')} s",
     ]
     realized = payload.get("realized") or {}
     if realized:
@@ -142,18 +139,6 @@ def run_brief(date: str, ticker: str, tier: str, mixer: str):
     return brief, "\n".join(header), _fmt_hop(payload.get("hop")), chart, _fmt_mixers(payload.get("mixers") or {})
 
 
-def paper_facts() -> str:
-    return (
-        "VESTA is an evaluation protocol, not a mixer and not a trading system.\n"
-        "Headline test: 27 May 2025 to 19 August 2026, n=308, bull window. "
-        "Mean fusion 53.0±2.2 vs majority 52.3. Overlay loses to buy-and-hold (Sharpe 1.69).\n"
-        "2023 holdout on the same index (n=248): mean fusion 53.3±1.7; vision overlay Sharpe 1.81 vs BH 0.99. "
-        "Two uncorrected windows; no winner.\n"
-        "Hop is executed (M3 day-level cosine, α=1, no portfolio) and does not enter the mixer.\n"
-        f"{NASA_LINE}. Fleiss κ=0.50 is three codebooks; there are no human annotators."
-    )
-
-
 def build_demo() -> gr.Blocks:
     dates = _dates()
     tickers = _tickers()
@@ -162,8 +147,7 @@ def build_demo() -> gr.Blocks:
         gr.Markdown(
             "# VESTA\n"
             "Time-budgeted multimodal briefing for BIST retail users. "
-            "Public path: 16-d KAP bag, VisualClaw, seed-0 score-space mixers, T1/T3/T10. "
-            "This Space is a console on the paper corpus, not a scientific contribution."
+            "16-d KAP bag, VisualClaw, seed-0 mixers, T1/T3/T10."
         )
         with gr.Row():
             with gr.Column(scale=1):
@@ -184,12 +168,10 @@ def build_demo() -> gr.Blocks:
                 hop = gr.Textbox(label="M3 hop", lines=6)
                 chart = gr.Image(label="40-bar chart (t-40 … t-1)", type="pil")
                 mixers = gr.Textbox(label="All mixers", lines=10)
-        facts = gr.Textbox(label="Paper facts", value=paper_facts(), lines=7)
         go.click(run_brief, inputs=[date, ticker, tier, mixer], outputs=[brief, call, hop, chart, mixers])
         demo.load(run_brief, inputs=[date, ticker, tier, mixer], outputs=[brief, call, hop, chart, mixers])
         gr.Markdown(
-            "Replication: [github.com/ozge-devops/congress](https://github.com/ozge-devops/congress). "
-            f"{NASA_LINE}."
+            "Source: [github.com/ozge-devops/congress](https://github.com/ozge-devops/congress)."
         )
     return demo
 

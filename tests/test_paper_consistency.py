@@ -210,7 +210,8 @@ def test_learned_gmu_matches_json_and_paper():
     assert "there is no second market" not in paper
     assert "second_window" in (ROOT / "src" / "vesta" / "engine.py").read_text()
     space_app = (ROOT / "app.py").read_text()
-    assert "Human NASA-TLX responses are not claimed" in space_app
+    assert "scientific contribution" not in space_app
+    assert "Paper lock" not in space_app
     assert "huggingface.co/spaces/" not in space_app
 
 

@@ -149,26 +149,16 @@ bash paper/pack_comesyso.sh
 ## Hugging Face Space
 
 `app.py` is a Gradio console on the same public engine (date, ticker, T1/T3/T10,
-mixer, hop, 40-bar chart). It is a demo, not a paper result.
+mixer, hop, 40-bar chart).
 
 ```bash
 pip install -r requirements.txt
 PYTHONPATH=src python app.py
 ```
 
-Open `http://127.0.0.1:7865`. To publish a Space, export a Hugging Face
-**write** token and run:
-
-```bash
-export HF_TOKEN=hf_...
-python scripts/push_hf_space.py          # creates USER/vesta
-python scripts/push_hf_space.py --repo USER/vesta
-```
-
-Revoke the token after the upload. New Gradio Spaces on cpu-basic now need
-Hugging Face PRO. The public static viewer is
-[huggingface.co/spaces/ozgezelal/vesta](https://huggingface.co/spaces/ozgezelal/vesta)
-(locked example briefs; not a live mixer).
+Open `http://127.0.0.1:7865`. Public viewer:
+[huggingface.co/spaces/ozgezelal/vesta](https://huggingface.co/spaces/ozgezelal/vesta).
+New Gradio Spaces on Hugging Face cpu-basic require a PRO plan.
 
 ## What is still missing
 
