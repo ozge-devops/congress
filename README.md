@@ -2,8 +2,7 @@
 
 Evaluation protocol for time-budgeted multimodal briefing for BIST retail users.
 
-Peri Güneş (Infina Software), Harun Benlı (Infina Software),
-Özge Zelal Küçük (Istanbul Aydin University).
+Peri Güneş, Harun Benlı, Özge Zelal Küçük
 
 CoMeSySo 2026 manuscript and replication package.
 Public repository: [github.com/ozge-devops/congress](https://github.com/ozge-devops/congress).
