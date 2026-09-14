@@ -110,9 +110,9 @@ On the public test window (27 May 2025 to 19 August 2026, 308 index days):
   (minimum McNemar \(p=0.46\) on seed 0). Mean fusion is the five-seed
   point estimate: 53.0% accuracy / 52.4% macro-F1. Learned Arevalo GMU
   is \(52.5\pm0.5\) / \(40.3\pm4.4\) (seed-0 McNemar \(p=0.29\)).
-- Proxy accuracy vs next-day direction: macro flags 54.9%, KAP polarity 49.7%,
-  vision \(52.9\pm2.3\)%, tabular \(50.6\pm0.0\)%. Codebook Fleiss \(\kappa=0.50\)
-  on the 10k slice; chart A/B Cohen \(\kappa=0.52\).
+- Proxy accuracy vs next-day direction: macro flags 54.9%, vision
+  \(52.9\pm2.3\)%, tabular \(50.6\pm0.0\)%, KAP polarity 49.7%. Codebook
+  Fleiss \(\kappa=0.50\) on the 10k slice; chart A/B Cohen \(\kappa=0.52\).
 - T1 covers 32.5% of days on seed 0. \(\mathrm{IN}_{\mathrm{new}}\) is
   60.3 / 82.1 / 93.6% on templated token bags.
 - Buy-and-hold Sharpe in that window is 1.69; every seed-0 overlay is lower.

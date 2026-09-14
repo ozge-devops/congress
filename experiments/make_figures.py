@@ -86,7 +86,8 @@ def fig_leakage():
 
 
 def fig_forward():
-    order = ["mean", "tfn", "vision", "gated", "concat", "gmu", "mult", "text", "tabular", "learned", "majority"]
+    # Same row order as Table 3: accuracy descending, F1 as tie-break.
+    order = ["mean", "vision", "concat", "learned", "majority", "tfn", "text", "gated", "gmu", "tabular", "mult"]
     pretty = {
         "majority": "Majority",
         "text": "Text (macro+KAP)",
@@ -104,8 +105,14 @@ def fig_forward():
         100.0 * (LG["f1"]["mean"] if k == "learned" else R["forward"][k]["f1"]["mean"])
         for k in order
     ]
-    colors = ["#9ca3af" if k in {"majority", "text", "tabular", "vision"} else "#1d4ed8" for k in order]
-    colors[-1] = "#0f766e"
+    colors = []
+    for k in order:
+        if k == "learned":
+            colors.append("#0f766e")
+        elif k in {"majority", "text", "tabular", "vision"}:
+            colors.append("#9ca3af")
+        else:
+            colors.append("#1d4ed8")
     fig, ax = plt.subplots(figsize=(7.1, 3.3))
     x = np.arange(len(order))
     ax.bar(x, f1, color=colors, linewidth=0)

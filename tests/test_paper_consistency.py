@@ -141,7 +141,7 @@ def test_learned_gmu_matches_json_and_paper():
     assert "fourteen rows" in paper
     assert "Human NASA-TLX responses are not claimed" in paper
     assert "Evaluating Time-Budgeted Multimodal Briefing" in paper
-    assert "four protocol facts" in paper
+    assert "measurement protocol" in paper
     # CoMeSySo 2026 CFP: Introduction -- Methods -- Results -- Discussions
     assert "\\section{Introduction}" in paper
     assert "\\section{Methods}" in paper
@@ -332,21 +332,33 @@ def test_every_table_cell_matches_json():
         "GMU (score-space)": (fwd["gmu"]["acc"], fwd["gmu"]["f1"]),
         "Vision-only (frozen ViT-B/16)": (vit["acc"], vit["f1"]),
         "Text-only (public BGE-M3)": (m3["acc"], m3["f1"]),
-        "1-layer attention (not MulT)": (fwd["mult"]["acc"], fwd["mult"]["f1"]),
+        "1-layer attention": (fwd["mult"]["acc"], fwd["mult"]["f1"]),
         "Text-only (macro + KAP)": (fwd["text"]["acc"], fwd["text"]["f1"]),
         "Tabular OHLCV": (fwd["tabular"]["acc"], fwd["tabular"]["f1"]),
         "Learned GMU ($W_v,W_t,W_z$)": (lg["acc"], lg["f1"]),
         "Majority class": (fwd["majority"]["acc"], fwd["majority"]["f1"]),
     }
-    f1s = []
-    for name, (acc, f1) in table_fwd.items():
+    # Table 3 is accuracy-descending (tie-break: macro-F1).
+    ordered = sorted(
+        table_fwd.items(),
+        key=lambda kv: (
+            round(100.0 * kv[1][0]["mean"], 1),
+            round(100.0 * kv[1][1]["mean"], 1),
+        ),
+        reverse=True,
+    )
+    accs = []
+    for name, (acc, f1) in ordered:
         cell = (
             f"{name} & ${_pm(acc['mean'], acc['ci95'])}$ & "
             f"${_pm(f1['mean'], f1['ci95'])}$"
         )
         assert cell in paper, cell
-        f1s.append(round(100.0 * f1["mean"], 1))
-    assert f1s == sorted(f1s, reverse=True)
+        accs.append(round(100.0 * acc["mean"], 1))
+    assert accs == sorted(accs, reverse=True)
+    fwd_tex = paper.split(r"\label{tab:fwd}")[1].split(r"\end{tabular}")[0]
+    pos = [fwd_tex.index(f"{name} &") for name, _ in ordered]
+    assert pos == sorted(pos)
 
     leak = r["leak_learned"]
     assert _row("Closed-form OHLCV rule", "$100.0$", "$100.0$") in paper
@@ -520,6 +532,51 @@ def test_kap_example_rows_match_corpus():
     assert "İşlemleri''. That" in paper
     assert "İşlemleri.''" not in paper
     assert "1-layer attn" not in paper
+    assert "Rows are ordered" not in paper
+    assert "four protocol facts" not in paper
+    assert "Those four facts" not in paper
+    assert "This paper is an evaluation protocol" not in paper
+    assert "This paper is a protocol, not a mixer" not in paper
+    # Example KAP rows are calendar-sorted; numeric tables fall on the
+    # primary metric (accuracy or Sharpe), not a shuffled display order.
+    text_tex = paper.split(r"\label{tab:text}")[1].split(r"\end{tabular}")[0]
+    dates = re.findall(r"20\d{2}-\d{2}-\d{2}", text_tex)
+    assert dates == sorted(dates)
+
+    def first_col(label: str) -> list[float]:
+        blob = paper.split(rf"\label{{{label}}}")[1].split(r"\end{tabular}")[0]
+        vals: list[float] = []
+        for ln in blob.splitlines():
+            if "&" not in ln or ln.strip().startswith("%"):
+                continue
+            if re.search(r"\\\\$", ln.strip()) is None:
+                continue
+            m = re.search(r"&\s*\$?([+-]?\d+\.\d+)", ln)
+            if m:
+                vals.append(float(m.group(1)))
+        return vals
+
+    proxy_acc = first_col("tab:proxy")
+    assert proxy_acc == [54.9, 52.9, 50.6, 49.7]
+    assert proxy_acc == sorted(proxy_acc, reverse=True)
+    leak_acc = first_col("tab:leak")
+    assert leak_acc == [100.0, 96.8, 90.6]
+    vlm_acc = first_col("tab:vlm")
+    assert vlm_acc == [52.9, 52.3, 52.3, 51.6]
+    win_acc = first_col("tab:win2")
+    assert win_acc == [53.3, 53.1, 52.5, 51.2, 51.2, 50.4]
+    bt_tex = paper.split(r"\label{tab:bt}")[1].split(r"\end{tabular}")[0]
+    bt_sharpe = []
+    for ln in bt_tex.splitlines():
+        if "&" not in ln or not ln.strip().endswith(r"\\"):
+            continue
+        if ln.strip().startswith("Policy"):
+            continue
+        cols = [c.strip() for c in ln.split("&")]
+        m = re.search(r"([-]?\d+\.\d+)", cols[2])
+        assert m, ln
+        bt_sharpe.append(float(m.group(1)))
+    assert bt_sharpe == [1.69, 0.37, 0.33, -0.11, -0.74]
 
 
 def test_stored_briefs_match_text_polarity():
