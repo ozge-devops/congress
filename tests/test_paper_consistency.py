@@ -173,6 +173,8 @@ def test_learned_gmu_matches_json_and_paper():
     assert "LNCS draft" in readme
     assert "matches this PDF" in readme
     assert "does not match this PDF" not in readme
+    assert "Time-Budgeted Multimodal Agents" not in readme
+    assert "Agentic RAG" not in readme
     assert "c03627c" not in paper
     assert "Time-Budgeted Multimodal Agents" not in paper
     assert "Agentic RAG" not in paper

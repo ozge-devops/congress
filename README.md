@@ -6,8 +6,7 @@ Peri Güneş, Harun Benlı, Özge Zelal Küçük
 
 CoMeSySo 2026 manuscript and replication package.
 Public repository: [github.com/ozge-devops/congress](https://github.com/ozge-devops/congress).
-Commit `c03627c` is an earlier LNCS draft (title *Time-Budgeted Multimodal Agents*,
-Agentic RAG keywords, merged McNemar `p>0.46`). Current `main` matches this PDF.
+An earlier LNCS draft is commit `c03627c`. Current `main` matches this PDF.
 
 Camera-ready PDF: [paper/vesta.pdf](paper/vesta.pdf).
 Source: [paper/vesta.tex](paper/vesta.tex).
