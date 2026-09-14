@@ -2,7 +2,7 @@
 
 Evaluation protocol for time-budgeted multimodal briefing for BIST retail users.
 
-Peri Güneş, Harun Benlı, Özge Zelal Küçük
+Peri Güneş,Harun Benlı,Özge Zelal Küçük
 
 CoMeSySo 2026 manuscript and replication package.
 Public repository: [github.com/ozge-devops/congress](https://github.com/ozge-devops/congress).
