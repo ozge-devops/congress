@@ -62,7 +62,7 @@ def _mixers() -> list[str]:
 def _fmt_call(payload: dict) -> str:
     if payload.get("silent"):
         return "T1 silent  |g-0.5| ≤ 0.18"
-    call = payload.get("call") or "—"
+    call = payload.get("call") or "-"
     p = payload.get("p_up")
     return f"{call.upper()}   p(up)={p:.3f}" if isinstance(p, float) else str(call)
 

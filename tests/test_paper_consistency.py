@@ -95,7 +95,7 @@ def test_technical_proxy_is_mean_vision_not_last_seed():
     tech = round(100.0 * r["technical_accuracy_proxy"], 1)
     assert vis == tech == 52.9
     # §metrics must not attribute 50.6% to the vision encoder
-    metrics = paper.split("Sentiment / technical accuracy")[1].split("Information noise")[0]
+    metrics = paper.split("proxy accuracy versus next-day direction")[1].split("Information noise")[0]
     assert "50.6" not in metrics or "tabular" in metrics.lower()
     assert "52.9" in paper
     assert "tab:proxy" in paper
@@ -141,7 +141,8 @@ def test_learned_gmu_matches_json_and_paper():
     assert "fourteen rows" in paper
     assert "Human NASA-TLX responses are not claimed" in paper
     assert "Evaluating Time-Budgeted Multimodal Briefing" in paper
-    assert "measurement protocol" in paper
+    assert r"Peri G{\"u}ne\c{s}\inst{1} \and Harun Benl{\i}\inst{1} \and {\"O}zge Zelal K{\"u}\c{c}{\"u}k\inst{2}" in paper
+    assert "P. G{\"u}ne\\c{s} et al." in paper or r"P. G{\"u}ne\c{s} et al." in paper
     # CoMeSySo 2026 CFP: Introduction -- Methods -- Results -- Discussions
     assert "\\section{Introduction}" in paper
     assert "\\section{Methods}" in paper
@@ -537,6 +538,23 @@ def test_kap_example_rows_match_corpus():
     assert "Those four facts" not in paper
     assert "This paper is an evaluation protocol" not in paper
     assert "This paper is a protocol, not a mixer" not in paper
+    assert "measurement protocol, not a" not in paper
+    assert "This paper does not claim" not in paper
+    assert "intended independent variable" not in paper
+    assert "No participant sat" not in paper
+    assert "sit with the tier" not in paper
+    assert "sit beside" not in paper
+    assert "is not a winner" not in paper
+    assert "not a second market" not in paper
+    assert "2025--2026" not in paper
+    assert "\u2014" not in paper
+    assert "\u2013" not in paper
+    # No one-word sentence labels of the form "Classification. Accuracy"
+    assert "Classification. Accuracy" not in paper
+    assert "Information noise. This" not in paper
+    assert "Decision quality. Classification" not in paper
+    assert "Sentiment / technical accuracy." not in paper
+    # Author line is Peri, Harun, Ozge (already asserted as the full \\author string).
     # Example KAP rows are calendar-sorted; numeric tables fall on the
     # primary metric (accuracy or Sharpe), not a shuffled display order.
     text_tex = paper.split(r"\label{tab:text}")[1].split(r"\end{tabular}")[0]

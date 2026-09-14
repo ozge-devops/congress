@@ -3,18 +3,18 @@ title: "VESTA: Evaluating Time-Budgeted Multimodal Briefing for BIST Retail User
 message: "Please cite the manuscript in paper/vesta.pdf."
 type: software
 authors:
-  - family-names: Gunes
+  - family-names: Güneş
     given-names: Peri
     email: pgunes@infina.com.tr
     affiliation: "Infina Software Development Inc."
-  - family-names: Kucuk
-    given-names: Ozge Zelal
-    email: ozelalkucuk@stu.aydin.edu.tr
-    affiliation: "İstanbul Aydın University"
-  - family-names: Benli
+  - family-names: Benlı
     given-names: Harun
     email: hbenli@infina.com.tr
     affiliation: "Infina Software Development Inc."
+  - family-names: Küçük
+    given-names: Özge Zelal
+    email: ozelalkucuk@stu.aydin.edu.tr
+    affiliation: "İstanbul Aydın University"
 url: "https://github.com/ozge-devops/congress"
 repository-code: "https://github.com/ozge-devops/congress"
 keywords:
@@ -28,11 +28,11 @@ preferred-citation:
   type: conference-paper
   title: "VESTA: Evaluating Time-Budgeted Multimodal Briefing for BIST Retail Users"
   authors:
-    - family-names: Gunes
+    - family-names: Güneş
       given-names: Peri
-    - family-names: Kucuk
-      given-names: Ozge Zelal
-    - family-names: Benli
+    - family-names: Benlı
       given-names: Harun
+    - family-names: Küçük
+      given-names: Özge Zelal
   year: 2026
   collection-title: "CoMeSySo 2026 (Springer LNNS, submitted)"
